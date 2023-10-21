@@ -9,7 +9,8 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@color/black"
+        android:background="#80000000"
+        android:elevation="0dp"
         android:foregroundGravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent">
 

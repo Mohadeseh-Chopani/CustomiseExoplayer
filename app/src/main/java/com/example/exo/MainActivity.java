@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.media.AudioAttributes;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,9 +19,15 @@ import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.dash.DashMediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.BuildConfig;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
+import com.google.android.exoplayer2.util.MimeTypes;
 
 public class MainActivity extends AppCompatActivity implements DialogSpeed.ListenerSpeed, DialogQuality.ListenerQuality {
 
@@ -39,11 +46,16 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         playerView = findViewById(R.id.playview);
 
         player = new ExoPlayer.Builder(this).build();
-        player.setMediaItem(MediaItem.fromUri("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"));
+
+        MediaItem mediaItem = new MediaItem.Builder()
+                .setUri("https://vod2.afarinak.com/api/video/0520aff4-b322-4e8e-a002-415a2517c813/stream/afarinak/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiMDUyMGFmZjQtYjMyMi00ZThlLWEwMDItNDE1YTI1MTdjODEzIn0.icmKpiQLkXSd7GVC5w7QVT16lW4eqy9KPyPYzUXo8ds/master.mpd")
+                .setMediaId(MimeTypes.APPLICATION_MPD)
+                .build();
+
         playerView.setPlayer(player);
+        player.setMediaItem(mediaItem);
         player.prepare();
         player.setPlayWhenReady(true);
-
 
         btn_play = playerView.findViewById(R.id.exo_play_pause);
         settings = playerView.findViewById(R.id.settings);
@@ -78,13 +90,6 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
                 }
             }
         });
-
-        AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .build();
-
-
     }
 
     @Override
@@ -108,7 +113,8 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
                     DialogSpeed dialogSpeed = new DialogSpeed();
                     dialogSpeed.show(getSupportFragmentManager(), null);
-                } else if (item.getItemId() == R.id.quality) {
+                }
+                else if (item.getItemId() == R.id.quality) {
                     DialogQuality dialogQuality = new DialogQuality();
                     dialogQuality.show(getFragmentManager(), null);
                 }

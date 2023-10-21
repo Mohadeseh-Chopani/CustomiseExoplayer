@@ -19,7 +19,7 @@ import androidx.fragment.app.FragmentManager;
 public class DialogQuality extends DialogFragment {
 
     ListenerQuality listenerQuality;
-    RadioGroup radioGroup;
+    RadioGroup radio_Group;
     RadioButton radiobtn_automatic,radiobtn_360,radiobtn_480,radiobtn_720,radiobtn_1080;
 
     @Override
@@ -36,14 +36,14 @@ public class DialogQuality extends DialogFragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_quality, null, false);
         builder.setView(view);
 
-        radioGroup = view.findViewById(R.id.radio_group_quality);
+        radio_Group = view.findViewById(R.id.radio_group_quality);
         radiobtn_automatic = view.findViewById(R.id.quality_atomatic);
         radiobtn_360 = view.findViewById(R.id.quality_360);
         radiobtn_480 = view.findViewById(R.id.quality_480);
         radiobtn_720 = view.findViewById(R.id.quality_720);
         radiobtn_1080 = view.findViewById(R.id.quality_1080);
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        radio_Group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 if (i == R.id.quality_atomatic) {

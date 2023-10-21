@@ -51,30 +51,30 @@ public class DialogSpeed extends DialogFragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_speed, null, false);
         builder.setView(view);
 
-        radio_50 = view.findViewById(R.id.radio_0_5);
-        radio_75 = view.findViewById(R.id.radio_0_75);
+        radio_50 = view.findViewById(R.id.radio_50);
+        radio_75 = view.findViewById(R.id.radio_75);
         radio_1 = view.findViewById(R.id.radio_normal);
-        radio_125 = view.findViewById(R.id.radio_1_25);
-        radio_150 = view.findViewById(R.id.radio_1_5);
+        radio_125 = view.findViewById(R.id.radio_125);
+        radio_150 = view.findViewById(R.id.radio_150);
         radioGroup = view.findViewById(R.id.radioGroup);
         confirm = view.findViewById(R.id.confirm_speed);
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.radio_0_5) {
+                if (checkedId == R.id.radio_50) {
                     radio_50.setBackgroundColor(R.drawable.shape_item_checked);
                     status = Status.SPEED50;
                 } else if (checkedId == R.id.radio_normal) {
                     radio_1.setBackgroundColor(R.drawable.shape_item_checked);
                     status = Status.SPEED1;
-                } else if (checkedId == R.id.radio_0_75) {
+                } else if (checkedId == R.id.radio_75) {
                     radio_75.setBackgroundColor(R.drawable.shape_item_checked);
                     status = Status.SPEED75;
-                } else if (checkedId == R.id.radio_1_25) {
+                } else if (checkedId == R.id.radio_125) {
                     radio_125.setBackgroundColor(R.drawable.shape_item_checked);
                     status = Status.SPEED125;
-                } else if (checkedId == R.id.radio_1_5) {
+                } else if (checkedId == R.id.radio_150) {
                     radio_150.setBackgroundColor(R.drawable.shape_item_checked);
                     status = Status.SPEED150;
                 }
