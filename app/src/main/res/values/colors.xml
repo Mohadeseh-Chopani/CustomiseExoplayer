@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="checked">#FF9800</color>
+    <color name="volume">#03AFC1</color>
 </resources>

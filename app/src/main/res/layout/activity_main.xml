@@ -15,4 +15,5 @@
         app:show_subtitle_button="true"
         app:auto_show="true"
         app:controller_layout_id="@layout/custome_player_layout"/>
+    
 </androidx.constraintlayout.widget.ConstraintLayout>

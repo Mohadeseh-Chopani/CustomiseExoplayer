@@ -26,50 +26,55 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:background="@color/white"/>
-        <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:checkedButton="@id/radio_normal"
-            android:orientation="horizontal"
-            android:id="@+id/radioGroup">
 
-            <RadioButton
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RadioGroup
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0.5 x"
-                android:layout_margin="8dp"
-                style="@style/Widget.AppCompat.CompoundButton.RadioButton"
-                android:id="@+id/radio_50"/>
+                android:layout_marginTop="20dp"
+                android:checkedButton="@id/radio_normal"
+                android:orientation="horizontal"
+                android:id="@+id/radioGroup">
 
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="0.75 x"
-                android:id="@+id/radio_75"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.5 x"
+                    android:layout_margin="8dp"
+                    style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                    android:id="@+id/radio_50"/>
 
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="normal"
-                android:layout_margin="8dp"
-                android:id="@+id/radio_normal"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="0.75 x"
+                    android:id="@+id/radio_75"/>
 
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1.25 x"
-                android:layout_margin="8dp"
-                android:id="@+id/radio_125"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="normal"
+                    android:layout_margin="8dp"
+                    android:id="@+id/radio_normal"/>
 
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1.5 x"
-                android:layout_margin="8dp"
-                android:id="@+id/radio_150"/>
-        </RadioGroup>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1.25 x"
+                    android:layout_margin="8dp"
+                    android:id="@+id/radio_125"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1.5 x"
+                    android:layout_margin="8dp"
+                    android:id="@+id/radio_150"/>
+            </RadioGroup>
+        </HorizontalScrollView>
 
         <Button
             android:id="@+id/confirm_speed"

@@ -5,7 +5,12 @@ import static android.content.ContentValues.TAG;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.SeekBar;
 
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
@@ -34,7 +40,11 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     ExoPlayer player;
     ImageView btn_play;
     StyledPlayerView playerView;
+    SeekBar seekBar;
+    ImageView img_volume;
 
+    VolumeChangeReceiver volumeChangeReceiver;
+    AudioManager audioManager;
     ImageView settings;
 
     @SuppressLint("MissingInflatedId")
@@ -44,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         setContentView(R.layout.activity_main);
 
         playerView = findViewById(R.id.playview);
+        seekBar = findViewById(R.id.mySeekBar);
+        img_volume = findViewById(R.id.img_volume);
 
         player = new ExoPlayer.Builder(this).build();
 
@@ -90,6 +102,43 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
                 }
             }
         });
+
+
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+        volumeChangeReceiver = new VolumeChangeReceiver(seekBar,audioManager);
+        IntentFilter intentFilter = new IntentFilter("android.media.VOLUME_CHANGED_ACTION");
+        registerReceiver(volumeChangeReceiver, intentFilter);
+
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                float volume = progress / 100f;
+                setVolume(volume);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
+
+    @SuppressLint("ResourceAsColor")
+    void setVolume(float volume) {
+        player.setVolume(volume);
+        if(volume == 0.0f) {
+            img_volume.setBackgroundColor(R.color.volume);
+            img_volume.setImageResource(R.drawable.outline_volume_off_24);
+        }else {
+            img_volume.setImageResource(R.drawable.outline_volume_up_24);
+        }
     }
 
     @Override
