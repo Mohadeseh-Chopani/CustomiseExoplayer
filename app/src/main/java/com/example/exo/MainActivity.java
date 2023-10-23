@@ -5,11 +5,8 @@ import static android.content.ContentValues.TAG;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,26 +16,26 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.SeekBar;
+import com.google.android.exoplayer2.Format;
+import com.google.android.exoplayer2.util.MimeTypes;
 
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.dash.DashMediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.BuildConfig;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
-import com.google.android.exoplayer2.util.MimeTypes;
+import com.google.android.exoplayer2.ui.SubtitleView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements DialogSpeed.ListenerSpeed, DialogQuality.ListenerQuality {
 
     ExoPlayer player;
-    ImageView btn_play;
+    ImageView btnPlay;
     StyledPlayerView playerView;
     SeekBar seekBar;
     ImageView img_volume;
@@ -46,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     VolumeChangeReceiver volumeChangeReceiver;
     AudioManager audioManager;
     ImageView settings;
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,16 +56,17 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         player = new ExoPlayer.Builder(this).build();
 
         MediaItem mediaItem = new MediaItem.Builder()
-                .setUri("https://vod2.afarinak.com/api/video/0520aff4-b322-4e8e-a002-415a2517c813/stream/afarinak/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiMDUyMGFmZjQtYjMyMi00ZThlLWEwMDItNDE1YTI1MTdjODEzIn0.icmKpiQLkXSd7GVC5w7QVT16lW4eqy9KPyPYzUXo8ds/master.mpd")
+                .setUri(" https://vod2.afarinak.com/api/video/5f3aa557-e4ca-4d46-9844-b1059b59b3c6/stream/afarinak/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiNWYzYWE1NTctZTRjYS00ZDQ2LTk4NDQtYjEwNTliNTliM2M2In0.N-pMsQ1RvBpd0sr4J029BYCqKi7TixT9CrG8Mv-Ai0A/master.mpd")
                 .setMediaId(MimeTypes.APPLICATION_MPD)
                 .build();
+
 
         playerView.setPlayer(player);
         player.setMediaItem(mediaItem);
         player.prepare();
         player.setPlayWhenReady(true);
 
-        btn_play = playerView.findViewById(R.id.exo_play_pause);
+        btnPlay = playerView.findViewById(R.id.exo_play_pause);
         settings = playerView.findViewById(R.id.settings);
 
         settings.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
-        volumeChangeReceiver = new VolumeChangeReceiver(seekBar,audioManager);
+        volumeChangeReceiver = new VolumeChangeReceiver(seekBar, audioManager);
         IntentFilter intentFilter = new IntentFilter("android.media.VOLUME_CHANGED_ACTION");
         registerReceiver(volumeChangeReceiver, intentFilter);
 
@@ -130,15 +127,36 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         });
     }
 
+    float currentVolume;
+
     @SuppressLint("ResourceAsColor")
     void setVolume(float volume) {
+        img_volume.setBackgroundColor(R.color.volume);
         player.setVolume(volume);
-        if(volume == 0.0f) {
-            img_volume.setBackgroundColor(R.color.volume);
+        if (volume == 0.0f) {
             img_volume.setImageResource(R.drawable.outline_volume_off_24);
-        }else {
+        } else if (volume == 0.1f) {
             img_volume.setImageResource(R.drawable.outline_volume_up_24);
+        } else {
+            img_volume.setImageResource(R.drawable.baseline_volume_down_24);
         }
+
+
+        img_volume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (volume != 0.0f) {
+                    img_volume.setImageResource(R.drawable.outline_volume_off_24);
+                    currentVolume = player.getVolume();
+                    player.setVolume(0.0f);
+                    seekBar.setProgress(0);
+                } else {
+                    img_volume.setImageResource(R.drawable.baseline_volume_down_24);
+                    player.setVolume(currentVolume);
+                    seekBar.setProgress((int) (currentVolume * 100));
+                }
+            }
+        });
     }
 
     @Override
@@ -162,8 +180,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
                     DialogSpeed dialogSpeed = new DialogSpeed();
                     dialogSpeed.show(getSupportFragmentManager(), null);
-                }
-                else if (item.getItemId() == R.id.quality) {
+                } else if (item.getItemId() == R.id.quality) {
                     DialogQuality dialogQuality = new DialogQuality();
                     dialogQuality.show(getFragmentManager(), null);
                 }
