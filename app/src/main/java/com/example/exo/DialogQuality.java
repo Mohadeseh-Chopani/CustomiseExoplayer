@@ -20,7 +20,7 @@ public class DialogQuality extends DialogFragment {
 
     ListenerQuality listenerQuality;
     RadioGroup radio_Group;
-    RadioButton radiobtn_automatic,radiobtn_360,radiobtn_480,radiobtn_720,radiobtn_1080;
+    RadioButton radiobtn_automatic, radiobtn_360, radiobtn_480, radiobtn_720, radiobtn_1080;
 
     @Override
     public void onAttach(Context context) {

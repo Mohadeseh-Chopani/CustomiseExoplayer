@@ -15,6 +15,7 @@ public class VolumeChangeReceiver extends BroadcastReceiver {
         this.volumeSeekBar = volumeSeekBar;
         this.audioManager = audioManager;
     }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction() != null && intent.getAction().equals("android.media.VOLUME_CHANGED_ACTION")) {

@@ -131,17 +131,18 @@
                 android:id="@+id/exo_play_pause"
                 android:layout_width="40dp"
                 android:layout_height="32dp"
-                android:layout_marginEnd="20dp"
                 android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:src="@drawable/baseline_play_arrow_24" />
+
             <ImageView
                 android:id="@+id/exo_pause"
                 android:layout_width="40dp"
                 android:layout_height="32dp"
-                android:visibility="gone"
-                android:layout_marginEnd="20dp"
                 android:layout_marginStart="20dp"
-                android:src="@drawable/baseline_pause_24" />
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/baseline_pause_24"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/exo_rew"
@@ -151,46 +152,22 @@
 
         </LinearLayout>
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:orientation="horizontal"-->
-<!--            android:weightSum="2"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toStartOf="@+id/linearLayout2"-->
-<!--            app:layout_constraintHorizontal_bias="0.14"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/linearLayout"-->
-<!--            app:layout_constraintVertical_bias="0.692">-->
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="90dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-<!--&lt;!&ndash;            <ImageView&ndash;&gt;-->
-<!--&lt;!&ndash;                android:id="@+id/exo"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_width="40dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_height="32dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_marginEnd="20dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:src="@drawable/outline_subtitles_24"&ndash;&gt;-->
-<!--&lt;!&ndash;                app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
-<!--&lt;!&ndash;                app:layout_constraintEnd_toStartOf="@+id/linearLayout2"&ndash;&gt;-->
-<!--&lt;!&ndash;                app:layout_constraintHorizontal_bias="0.122"&ndash;&gt;-->
-<!--&lt;!&ndash;                app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
-<!--&lt;!&ndash;                app:layout_constraintTop_toTopOf="@+id/linearLayout2"&ndash;&gt;-->
-<!--&lt;!&ndash;                app:tint="@color/white" />&ndash;&gt;-->
 
-<!--&lt;!&ndash;            <ImageView&ndash;&gt;-->
-<!--&lt;!&ndash;                android:id="@+id/exo_laguage"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_width="40dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_height="32dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:gravity="center"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:src="@drawable/baseline_language_24"&ndash;&gt;-->
-<!--&lt;!&ndash;                app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
-<!--&lt;!&ndash;                app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
-<!--&lt;!&ndash;                app:layout_constraintHorizontal_bias="0.122"&ndash;&gt;-->
-<!--&lt;!&ndash;                app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
-<!--&lt;!&ndash;                app:layout_constraintTop_toTopOf="@+id/linearLayout2"&ndash;&gt;-->
-<!--&lt;!&ndash;                app:tint="@color/white" />&ndash;&gt;-->
+        </LinearLayout>
 
-<!--        </LinearLayout>-->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -232,6 +209,20 @@
                 app:tint="@color/white" />
 
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/btnSubtitle"
+            android:layout_width="40dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/outline_subtitles_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
+            app:layout_constraintHorizontal_bias="0.355"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+            app:layout_constraintVertical_bias="0.529"
+            app:tint="@color/white" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

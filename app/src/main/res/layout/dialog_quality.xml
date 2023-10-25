@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Quality"
-            android:textSize="23dp"/>
+            android:textSize="23sp"/>
 
         <View
             android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/quality_atomatic"
                 android:text="Automatic"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:paddingLeft="10dp"/>
 
             <RadioButton
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/quality_360"
                 android:text="360"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:paddingLeft="10dp"/>
 
             <RadioButton
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/quality_480"
                 android:text="480"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:paddingLeft="10dp"/>
 
             <RadioButton
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/quality_720"
                 android:text="720"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:paddingLeft="10dp"/>
 
             <RadioButton
@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/quality_1080"
                 android:text="1080 HD"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:paddingLeft="10dp"/>
         </RadioGroup>
     </LinearLayout>
