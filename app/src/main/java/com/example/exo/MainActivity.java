@@ -23,6 +23,7 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.MergingMediaSource;
 import com.google.android.exoplayer2.source.SingleSampleMediaSource;
 import com.google.android.exoplayer2.source.dash.DashMediaSource;
+import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.MimeTypes;
@@ -40,7 +41,7 @@ import com.google.android.exoplayer2.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements DialogSpeed.ListenerSpeed, DialogQuality.ListenerQuality, DialogSubtitle.setSubtitle {
+public class MainActivity extends AppCompatActivity implements DialogSpeed.ListenerSpeed, DialogQuality.ListenerQuality , DialogSubtitle.setSubtitle{
 
     ExoPlayer player;
     ImageView btnPlay;
@@ -50,11 +51,14 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
     VolumeChangeReceiver volumeChangeReceiver;
 
-    MediaItem.SubtitleConfiguration subtitle1, subtitle2;
+    MediaItem.SubtitleConfiguration subtitle1 , subtitle2 ;
     AudioManager audioManager;
     ImageView settings;
 
+    DefaultTimeBar defaultTimeBar;
+
     ImageView btnSubtitle;
+    long position;
 
     DialogSubtitle.Status status = DialogSubtitle.Status.PERSIAN;
 
@@ -62,10 +66,8 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
     Uri videoUri = Uri.parse(" https://vod2.afarinak.com/api/video/5f3aa557-e4ca-4d46-9844-b1059b59b3c6/stream/afarinak/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiNWYzYWE1NTctZTRjYS00ZDQ2LTk4NDQtYjEwNTliNTliM2M2In0.N-pMsQ1RvBpd0sr4J029BYCqKi7TixT9CrG8Mv-Ai0A/master.mpd");
 
-    List<MediaItem.SubtitleConfiguration> subtitles = new ArrayList<>();
-
-    Subtitle subtitleClass;
-
+    List<MediaItem.SubtitleConfiguration>subtitles = new ArrayList<>();
+    Subtitle subtitleClass ;
     Uri subtitleUri2 = Uri.parse("");
 
     @SuppressLint("MissingInflatedId")
@@ -78,12 +80,13 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         seekBar = findViewById(R.id.mySeekBar);
         img_volume = findViewById(R.id.img_volume);
         btnSubtitle = findViewById(R.id.btnSubtitle);
+        defaultTimeBar = findViewById(R.id.exo_progress);
 
-        player = new ExoPlayer.Builder(this).build();
+        player = new ExoPlayer.Builder(this).setLoadControl(Buffering.setBuffer()).build();
 
         playerView.setPlayer(player);
 
-        subtitleClass = new Subtitle(player, this);
+        subtitleClass = new Subtitle(player,this);
 
 
         subtitle1 = new MediaItem.SubtitleConfiguration.Builder(subtitleUri1)
@@ -100,11 +103,11 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
                 .build();
 
 
-        subtitles.add(0, subtitle1);
-        subtitles.add(1, subtitle2);
+        subtitles.add(0,subtitle1);
+        subtitles.add(1,subtitle2);
 
 
-        subtitleClass.setSubtitleConfigurations(videoUri, subtitles, status);
+       subtitleClass.setSubtitleConfigurations(videoUri,subtitles,status);
         player.prepare();
         player.setPlayWhenReady(true);
 
@@ -123,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
             @Override
             public void onClick(View view) {
                 DialogSubtitle dialogSubtitle = new DialogSubtitle();
-                dialogSubtitle.show(getSupportFragmentManager(), null);
+                dialogSubtitle.show(getSupportFragmentManager(),null);
             }
         });
 
@@ -211,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     }
 
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -286,6 +290,8 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     @Override
     public void clickItemToChooseSub(DialogSubtitle.Status status) {
         this.status = status;
+        position = player.getCurrentPosition();
         subtitleClass.setSubtitleConfigurations(videoUri, subtitles, status);
+        player.seekTo(position);
     }
 }
