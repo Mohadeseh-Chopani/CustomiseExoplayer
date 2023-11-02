@@ -6,10 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/progressBar"/>
+
     <com.google.android.exoplayer2.ui.StyledPlayerView
         android:id="@+id/playview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:keep_content_on_player_reset="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:show_subtitle_button="true"

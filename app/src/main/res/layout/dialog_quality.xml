@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/quality_1080"
-                android:text="1080 HD"
+                android:text="1080"
                 android:textSize="18sp"
                 android:paddingLeft="10dp"/>
         </RadioGroup>

@@ -19,8 +19,10 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.exo.databinding.ActivityMainBinding;
 
-public class DialogSpeed extends DialogFragment {
+import java.util.ArrayList;
+import java.util.List;
 
+public class DialogSpeed extends DialogFragment {
     RadioButton radio_50, radio_75, radio_1, radio_125, radio_150;
     ListenerSpeed listenerSpeed;
 
@@ -34,8 +36,7 @@ public class DialogSpeed extends DialogFragment {
         SPEED125,
         SPEED150
     }
-
-    Status status = Status.SPEED1;
+    Status status ;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -51,6 +52,7 @@ public class DialogSpeed extends DialogFragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_speed, null, false);
         builder.setView(view);
 
+
         radio_50 = view.findViewById(R.id.radio_50);
         radio_75 = view.findViewById(R.id.radio_75);
         radio_1 = view.findViewById(R.id.radio_normal);
@@ -58,6 +60,24 @@ public class DialogSpeed extends DialogFragment {
         radio_150 = view.findViewById(R.id.radio_150);
         radioGroup = view.findViewById(R.id.radioGroup);
         confirm = view.findViewById(R.id.confirm_speed);
+
+        switch ((int) ((MainActivity.currentSpeed) * 100)){
+            case 1:
+                radio_1.setChecked(true);
+                break;
+            case 50:
+                radio_50.setChecked(true);
+                break;
+            case 75:
+                radio_75.setChecked(true);
+                break;
+            case 125:
+                radio_125.setChecked(true);
+                break;
+            case 150:
+                radio_150.setChecked(true);
+                break;
+        }
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -84,16 +104,21 @@ public class DialogSpeed extends DialogFragment {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (status == Status.SPEED1)
+                if (status == Status.SPEED1) {
                     listenerSpeed.itemClick(1.0f);
-                else if (status == Status.SPEED50)
+                }
+                else if (status == Status.SPEED50) {
                     listenerSpeed.itemClick(0.5f);
-                else if (status == Status.SPEED75)
+                }
+                else if (status == Status.SPEED75) {
                     listenerSpeed.itemClick(0.75f);
-                else if (status == Status.SPEED125)
+                }
+                else if (status == Status.SPEED125) {
                     listenerSpeed.itemClick(1.25f);
-                else if (status == Status.SPEED150)
+                }
+                else if (status == Status.SPEED150) {
                     listenerSpeed.itemClick(1.5f);
+                }
 
                 dismiss();
             }
@@ -101,7 +126,6 @@ public class DialogSpeed extends DialogFragment {
 
         return builder.create();
     }
-
     interface ListenerSpeed {
         void itemClick(Float speed);
     }

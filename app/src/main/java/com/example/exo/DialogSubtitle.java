@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +45,7 @@ public class DialogSubtitle extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_subtitle, null, false);
         builder.setView(view);
+
 
         radioGroup_subtitle = view.findViewById(R.id.radioGroup_sub);
         radioButton_off = view.findViewById(R.id.btn_off_sub);

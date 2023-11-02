@@ -34,7 +34,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:checkedButton="@id/radio_normal"
                 android:orientation="horizontal"
                 android:id="@+id/radioGroup">
 
@@ -58,6 +57,7 @@
                     android:layout_height="wrap_content"
                     android:text="normal"
                     android:layout_margin="8dp"
+                    android:checked="true"
                     android:id="@+id/radio_normal"/>
 
                 <RadioButton
