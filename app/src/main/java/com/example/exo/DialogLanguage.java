@@ -43,7 +43,7 @@ public class DialogLanguage extends DialogFragment {
         radioButton_persian = view.findViewById(R.id.btn_persian_lan);
 
 
-        switch (Language.currentLanguage){
+        switch (Language.currentLanguage) {
             case 0:
                 radioButton_english.setChecked(true);
                 break;

@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         player.addAnalyticsListener(new AnalyticsListener() {
             @Override
             public void onPlaybackStateChanged(EventTime eventTime, int state) {
-                if (state == Player.STATE_READY){
+                if (state == Player.STATE_READY) {
                     progressBar.setVisibility(View.GONE);
                     player.setPlayWhenReady(true);
                 } else if (state == Player.STATE_BUFFERING) {

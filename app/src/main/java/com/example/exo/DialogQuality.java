@@ -42,6 +42,7 @@ public class DialogQuality extends DialogFragment {
     }
 
     int status;
+
     @SuppressLint("MissingInflatedId")
     @NonNull
     @Override
@@ -57,7 +58,7 @@ public class DialogQuality extends DialogFragment {
         radiobtn_720 = view.findViewById(R.id.quality_720);
         radiobtn_1080 = view.findViewById(R.id.quality_1080);
 
-        switch (MainActivity.currentQuality){
+        switch (MainActivity.currentQuality) {
             case 0:
                 radiobtn_automatic.setChecked(true);
                 break;

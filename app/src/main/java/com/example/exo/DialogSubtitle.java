@@ -52,7 +52,7 @@ public class DialogSubtitle extends DialogFragment {
         radioButton_persian = view.findViewById(R.id.btn_persian_sub);
 
 
-        switch (Subtitle.currentSubtitle){
+        switch (Subtitle.currentSubtitle) {
             case 0:
                 radioButton_off.setChecked(true);
                 break;
