@@ -3,8 +3,10 @@ package com.example.exo;
 import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.media3.exoplayer.hls.HlsMediaSource;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.media.AudioManager;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
@@ -20,11 +23,16 @@ import android.widget.SeekBar;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.analytics.AnalyticsListener;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.MimeTypes;
 
 import com.google.android.exoplayer2.ExoPlayer;
@@ -35,6 +43,7 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.BuildConfig;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
+import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,13 +92,15 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         progressBar = findViewById(R.id.progressbar);
 
 
+        DefaultTrackSelector trackSelector = new DefaultTrackSelector(this);
+
         //Make instance of Exoplayer
-        player = new ExoPlayer.Builder(this).setLoadControl(Buffering.getBuffer(Subtitle.buffering)).build();
+        player = new ExoPlayer.Builder(this).setLoadControl(Buffering.getBuffer(Subtitle.buffering)).setTrackSelector(trackSelector).setTrackSelector(trackSelector).build();
         playerView.setPlayer(player);
 
 
         //Checking video for bilingual
-        if (player.getCurrentTrackGroups().length > 0) {
+        if (player.getCurrentTrackGroups().length > 1) {
             int audioTrackCount = player.getCurrentTrackGroups().get(0).length;
             if (audioTrackCount > 1)
                 btnLanguage.setBackgroundColor(R.color.unSetItem);
@@ -155,8 +166,13 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         //Fullscreen button
         btnFullscreen.setOnClickListener(view -> {
             playerView.setUseController(playerView.getUseController());
-            playerView.setResizeMode(playerView.getResizeMode() == AspectRatioFrameLayout.RESIZE_MODE_FILL ?
-                    AspectRatioFrameLayout.RESIZE_MODE_FIT : AspectRatioFrameLayout.RESIZE_MODE_FILL);
+            if (playerView.getResizeMode() == AspectRatioFrameLayout.RESIZE_MODE_FILL) {
+                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+                btnFullscreen.setImageResource(R.drawable.outline_fullscreen_24);
+            } else {
+                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+                btnFullscreen.setImageResource(R.drawable.baseline_fullscreen_exit_24);
+            }
         });
 
         btnLanguage.setOnClickListener(view -> {

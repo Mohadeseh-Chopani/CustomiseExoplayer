@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Speed"
             android:textSize="23dp"/>
@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <RadioGroup
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal"
@@ -76,14 +76,19 @@
             </RadioGroup>
         </HorizontalScrollView>
 
-        <Button
-            android:id="@+id/confirm_speed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:backgroundTint="@color/checked"
-            android:text="Confirm" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/confirm_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@color/checked"
+                android:text="Confirm" />
+
+        </FrameLayout>
 
     </LinearLayout>
 

@@ -43,7 +43,7 @@ public class DialogSpeed extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.MyCustomTheme);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_speed, null, false);
         builder.setView(view);
 
