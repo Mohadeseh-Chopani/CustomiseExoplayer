@@ -41,6 +41,7 @@ public class DialogQuality extends DialogFragment {
         listenerQuality = (ListenerQuality) context;
     }
 
+    int status;
     @SuppressLint("MissingInflatedId")
     @NonNull
     @Override
@@ -56,19 +57,47 @@ public class DialogQuality extends DialogFragment {
         radiobtn_720 = view.findViewById(R.id.quality_720);
         radiobtn_1080 = view.findViewById(R.id.quality_1080);
 
+        switch (MainActivity.currentQuality){
+            case 0:
+                radiobtn_automatic.setChecked(true);
+                break;
+            case 1:
+                radiobtn_360.setChecked(true);
+                break;
+            case 2:
+                radiobtn_480.setChecked(true);
+                break;
+            case 3:
+                radiobtn_720.setChecked(true);
+                break;
+            case 4:
+                radiobtn_1080.setChecked(true);
+                break;
+        }
+
         radio_Group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 if (i == R.id.quality_atomatic) {
-                    listenerQuality.itemClickToChangeQuality("auto");
+                    radiobtn_automatic.setChecked(true);
+                    status = 0;
+                    listenerQuality.itemClickToChangeQuality(status);
                 } else if (i == R.id.quality_360) {
-                    listenerQuality.itemClickToChangeQuality("360");
+                    radiobtn_360.setChecked(true);
+                    status = 1;
+                    listenerQuality.itemClickToChangeQuality(status);
                 } else if (i == R.id.quality_480) {
-                    listenerQuality.itemClickToChangeQuality("480");
+                    radiobtn_480.setChecked(true);
+                    status = 2;
+                    listenerQuality.itemClickToChangeQuality(status);
                 } else if (i == R.id.quality_720) {
-                    listenerQuality.itemClickToChangeQuality("720");
+                    radiobtn_720.setChecked(true);
+                    status = 3;
+                    listenerQuality.itemClickToChangeQuality(status);
                 } else if (i == R.id.quality_1080) {
-                    listenerQuality.itemClickToChangeQuality("1080");
+                    radiobtn_1080.setChecked(true);
+                    status = 4;
+                    listenerQuality.itemClickToChangeQuality(status);
                 }
                 dismiss();
             }
@@ -78,6 +107,6 @@ public class DialogQuality extends DialogFragment {
     }
 
     interface ListenerQuality {
-        void itemClickToChangeQuality(String selectedQuality);
+        void itemClickToChangeQuality(int status);
     }
 }

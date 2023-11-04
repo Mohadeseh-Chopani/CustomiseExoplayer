@@ -4,13 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#54000000"
     tools:context=".MainActivity">
 
-    <ProgressBar
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:id="@+id/progressBar"/>
 
     <com.google.android.exoplayer2.ui.StyledPlayerView
         android:id="@+id/playview"
@@ -21,6 +17,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:show_subtitle_button="true"
         app:auto_show="true"
-        app:controller_layout_id="@layout/custome_player_layout"/>
+        app:controller_layout_id="@layout/custome_player_layout">
+
+        <ProgressBar
+            android:id="@+id/progressbar"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content" />
+    </com.google.android.exoplayer2.ui.StyledPlayerView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,7 +21,7 @@ public class DialogLanguage extends DialogFragment {
 
 
     setLanguage setLanguage;
-    int status ;
+    int status;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -43,13 +43,22 @@ public class DialogLanguage extends DialogFragment {
         radioButton_persian = view.findViewById(R.id.btn_persian_lan);
 
 
+        switch (Language.currentLanguage){
+            case 0:
+                radioButton_english.setChecked(true);
+                break;
+            case 1:
+                radioButton_persian.setChecked(true);
+                break;
+        }
+
         radioGroup_language.setOnCheckedChangeListener((radioGroup, item) -> {
             if (item == R.id.btn_english_lan) {
-                radioButton_persian.setChecked(true);
+                radioButton_english.setChecked(true);
                 status = 0;
                 setLanguage.clickItemToChooseLan(status);
             } else if (item == R.id.btn_persian_lan) {
-                radioButton_english.setChecked(true);
+                radioButton_persian.setChecked(true);
                 status = 1;
                 setLanguage.clickItemToChooseLan(status);
             }

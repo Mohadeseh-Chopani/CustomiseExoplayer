@@ -20,6 +20,8 @@ public class Language {
     ExoPlayer player;
     Context context;
 
+    static int currentLanguage;
+
     public Language(ExoPlayer player, Context context) {
         this.context = context;
         this.player = player;
@@ -30,10 +32,13 @@ public class Language {
 
     public void setLanguage(int status) {
 
-        if (status == 0)
+        if (status == 0) {
             language = languageList[0];
-        else
+            currentLanguage = 0;
+        } else {
             language = languageList[1];
+            currentLanguage = 1;
+        }
         player.setTrackSelectionParameters(
                 player.getTrackSelectionParameters()
                         .buildUpon()

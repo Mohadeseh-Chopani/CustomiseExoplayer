@@ -52,16 +52,22 @@ public class DialogSubtitle extends DialogFragment {
         radioButton_persian = view.findViewById(R.id.btn_persian_sub);
 
 
+        switch (Subtitle.currentSubtitle){
+            case 0:
+                radioButton_off.setChecked(true);
+                break;
+            case 1:
+                radioButton_persian.setChecked(true);
+                break;
+        }
         radioGroup_subtitle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int item) {
                 if (item == R.id.btn_off_sub) {
-                    radioButton_off.setBackgroundColor(R.drawable.shape_item_checked);
                     radioButton_off.setChecked(true);
                     status = Status.OFF;
                     setSubtitle.clickItemToChooseSub(status);
                 } else if (item == R.id.btn_persian_sub) {
-                    radioButton_persian.setBackgroundColor(R.drawable.shape_item_checked);
                     radioButton_persian.setChecked(true);
                     status = Status.PERSIAN;
                     setSubtitle.clickItemToChooseSub(status);
@@ -69,7 +75,6 @@ public class DialogSubtitle extends DialogFragment {
                 dismiss();
             }
         });
-
         return builder.create();
     }
 

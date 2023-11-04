@@ -7,51 +7,6 @@
     app:cardElevation="-5dp"
     app:cardCornerRadius="15dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="20dp"
-        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Subtitle"
-            android:textSize="23sp"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@color/white"/>
-
-        <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="20dp"
-            android:id="@+id/radioGroup_sub">
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Off Subtitle"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:paddingLeft="10dp"
-                android:id="@+id/btn_off_sub"/>
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Persian"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:paddingLeft="10dp"
-                android:id="@+id/btn_persian_sub"/>
-        </RadioGroup>
-
-
-    </LinearLayout>
-
+    <include layout="@layout/subtitle_ui"/>
 </androidx.cardview.widget.CardView>

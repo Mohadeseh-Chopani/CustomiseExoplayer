@@ -17,8 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.exo.databinding.ActivityMainBinding;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,13 +28,10 @@ public class DialogSpeed extends DialogFragment {
     Button confirm;
 
     enum Status {
-        SPEED50,
-        SPEED75,
-        SPEED1,
-        SPEED125,
-        SPEED150
+        SPEED50, SPEED75, SPEED1, SPEED125, SPEED150
     }
-    Status status ;
+
+    Status status;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -61,7 +56,7 @@ public class DialogSpeed extends DialogFragment {
         radioGroup = view.findViewById(R.id.radioGroup);
         confirm = view.findViewById(R.id.confirm_speed);
 
-        switch ((int) ((MainActivity.currentSpeed) * 100)){
+        switch ((int) ((MainActivity.currentSpeed) * 100)) {
             case 1:
                 radio_1.setChecked(true);
                 break;
@@ -83,40 +78,30 @@ public class DialogSpeed extends DialogFragment {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.radio_50) {
-                    radio_50.setBackgroundColor(R.drawable.shape_item_checked);
                     status = Status.SPEED50;
                 } else if (checkedId == R.id.radio_normal) {
-                    radio_1.setBackgroundColor(R.drawable.shape_item_checked);
                     status = Status.SPEED1;
                 } else if (checkedId == R.id.radio_75) {
-                    radio_75.setBackgroundColor(R.drawable.shape_item_checked);
                     status = Status.SPEED75;
                 } else if (checkedId == R.id.radio_125) {
-                    radio_125.setBackgroundColor(R.drawable.shape_item_checked);
                     status = Status.SPEED125;
                 } else if (checkedId == R.id.radio_150) {
-                    radio_150.setBackgroundColor(R.drawable.shape_item_checked);
                     status = Status.SPEED150;
                 }
             }
         });
-
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (status == Status.SPEED1) {
                     listenerSpeed.itemClick(1.0f);
-                }
-                else if (status == Status.SPEED50) {
+                } else if (status == Status.SPEED50) {
                     listenerSpeed.itemClick(0.5f);
-                }
-                else if (status == Status.SPEED75) {
+                } else if (status == Status.SPEED75) {
                     listenerSpeed.itemClick(0.75f);
-                }
-                else if (status == Status.SPEED125) {
+                } else if (status == Status.SPEED125) {
                     listenerSpeed.itemClick(1.25f);
-                }
-                else if (status == Status.SPEED150) {
+                } else if (status == Status.SPEED150) {
                     listenerSpeed.itemClick(1.5f);
                 }
 
@@ -126,6 +111,7 @@ public class DialogSpeed extends DialogFragment {
 
         return builder.create();
     }
+
     interface ListenerSpeed {
         void itemClick(Float speed);
     }

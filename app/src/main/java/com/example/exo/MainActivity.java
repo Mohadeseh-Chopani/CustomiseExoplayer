@@ -3,14 +3,10 @@ package com.example.exo;
 import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.media3.exoplayer.hls.DefaultHlsDataSourceFactory;
-import androidx.media3.exoplayer.hls.HlsMediaSource;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,30 +19,12 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
 import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.DefaultRenderersFactory;
-import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.LoadControl;
-import com.google.android.exoplayer2.Tracks;
-import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
-import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.MergingMediaSource;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-import com.google.android.exoplayer2.source.SingleSampleMediaSource;
-import com.google.android.exoplayer2.source.TrackGroup;
-import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.source.dash.DashMediaSource;
-import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelectionParameters;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.analytics.AnalyticsListener;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.ui.SubtitleView;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultAllocator;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.util.MimeTypes;
 
 import com.google.android.exoplayer2.ExoPlayer;
@@ -57,12 +35,11 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.BuildConfig;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
-import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements DialogSpeed.ListenerSpeed, DialogQuality.ListenerQuality , DialogSubtitle.setSubtitle , DialogLanguage.setLanguage{
+public class MainActivity extends AppCompatActivity implements DialogSpeed.ListenerSpeed, DialogQuality.ListenerQuality, DialogSubtitle.setSubtitle, DialogLanguage.setLanguage {
 
     ExoPlayer player;
     ImageView btnPlay, img_volume, settings, btnSubtitle, btnFullscreen, btnLanguage;
@@ -71,19 +48,21 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     float currentVolume;
     VolumeChangeReceiver volumeChangeReceiver;
 
-    MediaItem.SubtitleConfiguration subtitle1 , subtitle2 ;
+    MediaItem.SubtitleConfiguration subtitle1, subtitle2;
     AudioManager audioManager;
 
+    ProgressBar progressBar;
     DefaultTimeBar defaultTimeBar;
     long position;
     Language languageClass;
+    static int currentQuality;
     DialogSubtitle.Status status = DialogSubtitle.Status.PERSIAN;
     Uri subtitleUri1 = Uri.parse("https://vod2.afarinak.com/api/video/subtitle/72/download/");
 
     Uri videoUri = Uri.parse("https://vod2.afarinak.com/api/video/a624b7ec-50b6-4997-a04a-b8e440a6bba4/stream/afarinak/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiYTYyNGI3ZWMtNTBiNi00OTk3LWEwNGEtYjhlNDQwYTZiYmE0In0.4y-WUvDNBBULYgvma0Vup3G0PaKnRvI6QF6ivVUWiZc/master.mpd");
 
-    List<MediaItem.SubtitleConfiguration>subtitles = new ArrayList<>();
-    Subtitle subtitleClass ;
+    List<MediaItem.SubtitleConfiguration> subtitles = new ArrayList<>();
+    Subtitle subtitleClass;
     Uri subtitleUri2 = Uri.parse("");
 
     @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
@@ -101,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         btnLanguage = findViewById(R.id.exo_language);
         btnPlay = playerView.findViewById(R.id.exo_play_pause);
         settings = playerView.findViewById(R.id.settings);
+        progressBar = findViewById(R.id.progressbar);
 
 
         //Make instance of Exoplayer
@@ -135,16 +115,16 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
                 .build();
 
 
-        subtitles.add(0,subtitle1);
-        subtitles.add(1,subtitle2);
+        subtitles.add(0, subtitle1);
+        subtitles.add(1, subtitle2);
 
 
         //Make instance of language class
-        languageClass = new Language(player ,this);
+        languageClass = new Language(player, this);
 
         //Set subtitle over video
-        subtitleClass = new Subtitle(player,this,subtitleUri1);
-        subtitleClass.setSubtitleConfigurations(videoUri,subtitles,status);
+        subtitleClass = new Subtitle(player, this, subtitleUri1);
+        subtitleClass.setSubtitleConfigurations(videoUri, subtitles, status);
         player.setPlayWhenReady(true);
 
 
@@ -153,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
         btnSubtitle.setOnClickListener(view -> {
             DialogSubtitle dialogSubtitle = new DialogSubtitle();
-            dialogSubtitle.show(getSupportFragmentManager(),null);
+            dialogSubtitle.show(getSupportFragmentManager(), null);
         });
 
 
@@ -181,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
         btnLanguage.setOnClickListener(view -> {
             DialogLanguage dialogLanguage = new DialogLanguage();
-            dialogLanguage.show(getSupportFragmentManager(),null);
+            dialogLanguage.show(getSupportFragmentManager(), null);
         });
 
 
@@ -204,6 +184,23 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
                     Log.e(TAG, "onPlaybackStateChanged: playing ");
                 else if (playbackState == Player.STATE_IDLE) {
                     Log.e(TAG, "onPlaybackStateChanged: it has not start");
+                }
+            }
+        });
+
+
+        player.addAnalyticsListener(new AnalyticsListener() {
+            @Override
+            public void onPlaybackStateChanged(EventTime eventTime, int state) {
+                if (state == Player.STATE_READY){
+                    progressBar.setVisibility(View.GONE);
+                    player.setPlayWhenReady(true);
+                } else if (state == Player.STATE_BUFFERING) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    playerView.setKeepScreenOn(true);
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    player.setPlayWhenReady(true);
                 }
             }
         });
@@ -248,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
             img_volume.setImageResource(R.drawable.baseline_volume_up_24);
         }
     }
-    
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -282,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         });
     }
 
-   public static float currentSpeed;
+    public static float currentSpeed;
 
     //Set volume over speed dialog
     @Override
@@ -297,25 +294,29 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
     //Set quality over quality dialog
     @Override
-    public void itemClickToChangeQuality(String selectedQuality) {
+    public void itemClickToChangeQuality(int status) {
         DefaultTrackSelector trackSelector = (DefaultTrackSelector) player.getTrackSelector();
         DefaultTrackSelector.Parameters.Builder parametersBuilder = trackSelector.buildUponParameters();
 
-
-        switch (selectedQuality) {
-            case "auto":
+        switch (status) {
+            case 0:
+                currentQuality = 0;
                 break;
-            case "360":
+            case 1:
                 parametersBuilder.setMaxVideoSize(680, 360);
+                currentQuality = 1;
                 break;
-            case "480":
+            case 2:
                 parametersBuilder.setMaxVideoSize(480, 360);
+                currentQuality = 2;
                 break;
-            case "720":
+            case 3:
                 parametersBuilder.setMaxVideoSize(1280, 720);
+                currentQuality = 3;
                 break;
-            case "1080":
+            case 4:
                 parametersBuilder.setMaxVideoSize(1920, 1080);
+                currentQuality = 4;
                 break;
         }
         trackSelector.setParameters(parametersBuilder.build());
