@@ -3,10 +3,9 @@ package com.example.exo;
 import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.media3.exoplayer.hls.HlsMediaSource;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.media.AudioManager;
@@ -15,24 +14,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.analytics.AnalyticsListener;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.MimeTypes;
 
 import com.google.android.exoplayer2.ExoPlayer;
@@ -43,7 +34,6 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.BuildConfig;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
-import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,17 +41,18 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements DialogSpeed.ListenerSpeed, DialogQuality.ListenerQuality, DialogSubtitle.setSubtitle, DialogLanguage.setLanguage {
 
     ExoPlayer player;
-    ImageView btnPlay, img_volume, settings, btnSubtitle, btnFullscreen, btnLanguage;
+    ImageView btnPlay, img_volume, settings, btnSubtitle, btnFullscreen, btnLanguage, img_brightness;
     StyledPlayerView playerView;
-    SeekBar seekBar;
+    SeekBar seekBarVolume, seekBarBrightness;
     float currentVolume;
     VolumeChangeReceiver volumeChangeReceiver;
 
     MediaItem.SubtitleConfiguration subtitle1, subtitle2;
     AudioManager audioManager;
-
     ProgressBar progressBar;
     DefaultTimeBar defaultTimeBar;
+    LinearLayout layoutVolume;
+    ConstraintLayout layoutController;
     long position;
     Language languageClass;
     static int currentQuality;
@@ -81,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         setContentView(R.layout.activity_main);
 
         playerView = findViewById(R.id.playview);
-        seekBar = findViewById(R.id.mySeekBar);
+        seekBarVolume = findViewById(R.id.SeekBarVolume);
         img_volume = findViewById(R.id.img_volume);
         btnSubtitle = findViewById(R.id.btnSubtitle);
         defaultTimeBar = findViewById(R.id.exo_progress);
@@ -90,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         btnPlay = playerView.findViewById(R.id.exo_play_pause);
         settings = playerView.findViewById(R.id.settings);
         progressBar = findViewById(R.id.progressbar);
+        layoutVolume = findViewById(R.id.layout_volume);
+        layoutController = findViewById(R.id.layout_controller);
+        seekBarBrightness = findViewById(R.id.SeekBarBrightness);
+        img_brightness = findViewById(R.id.img_brightness);
 
 
         DefaultTrackSelector trackSelector = new DefaultTrackSelector(this);
@@ -98,6 +93,25 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         player = new ExoPlayer.Builder(this).setLoadControl(Buffering.getBuffer(Subtitle.buffering)).setTrackSelector(trackSelector).setTrackSelector(trackSelector).build();
         playerView.setPlayer(player);
 
+
+        //Change brightness in player
+        BrightnessControl brightnessControl = new BrightnessControl(img_brightness, player, this);
+        seekBarBrightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                brightnessControl.setBrightness(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         //Checking video for bilingual
         if (player.getCurrentTrackGroups().length > 1) {
@@ -154,11 +168,11 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
                 img_volume.setImageResource(R.drawable.baseline_volume_off_24);
                 currentVolume = player.getVolume();
                 player.setVolume(0.0f);
-                seekBar.setProgress(0);
+                seekBarVolume.setProgress(0);
             } else {
                 img_volume.setImageResource(R.drawable.baseline_volume_down_24);
                 player.setVolume(currentVolume);
-                seekBar.setProgress((int) (currentVolume * 100));
+                seekBarVolume.setProgress((int) (currentVolume * 100));
             }
         });
 
@@ -224,13 +238,13 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
         //Send broadcast to OS to set volume
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        volumeChangeReceiver = new VolumeChangeReceiver(seekBar, audioManager);
+        volumeChangeReceiver = new VolumeChangeReceiver(seekBarVolume, audioManager);
         IntentFilter intentFilter = new IntentFilter("android.media.VOLUME_CHANGED_ACTION");
         registerReceiver(volumeChangeReceiver, intentFilter);
 
 
         //Set seekBar based on desired volume
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekBarVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 float volume = progress / 100f;

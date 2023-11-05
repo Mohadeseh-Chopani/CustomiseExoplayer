@@ -12,18 +12,20 @@
         android:id="@+id/playview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:auto_show="true"
+        app:controller_layout_id="@layout/custome_player_layout"
         app:keep_content_on_player_reset="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:show_subtitle_button="true"
-        app:auto_show="true"
-        app:controller_layout_id="@layout/custome_player_layout">
+        app:layout_constraintTop_toBottomOf="parent"
+        app:show_subtitle_button="true">
 
         <ProgressBar
             android:id="@+id/progressbar"
             android:layout_width="match_parent"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
     </com.google.android.exoplayer2.ui.StyledPlayerView>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
