@@ -4,19 +4,27 @@ import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.SharedPreferencesKt;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
@@ -55,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     ConstraintLayout layoutController;
     long position;
     Language languageClass;
+
+    static boolean statusRepetition;
     static int currentQuality;
     DialogSubtitle.Status status = DialogSubtitle.Status.PERSIAN;
     Uri subtitleUri1 = Uri.parse("https://vod2.afarinak.com/api/video/subtitle/72/download/");
@@ -219,6 +229,18 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         });
 
 
+        //Option auto replay video
+        player.addListener(new Player.Listener() {
+            @Override
+            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                if (playbackState == Player.STATE_ENDED && DialogSpeed.statusSwitch) {
+                    player.seekTo(0);
+                    player.setPlayWhenReady(true);
+                }
+            }
+        });
+
+
         player.addAnalyticsListener(new AnalyticsListener() {
             @Override
             public void onPlaybackStateChanged(EventTime eventTime, int state) {
@@ -286,10 +308,11 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
     //Set popup menu for setting button
     void settings(View view) {
-        PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+        Context wrapper = new ContextThemeWrapper(view.getContext(), R.style.MyPopupMenu);
+        PopupMenu popupMenu = new PopupMenu(this, view);
         popupMenu.getMenuInflater().inflate(R.menu.menu, popupMenu.getMenu());
-        popupMenu.show();
 
+        popupMenu.show();
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -318,6 +341,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         Float pitch = 1.0f;
         PlaybackParameters playbackParameters = new PlaybackParameters(speed, pitch);
         player.setPlaybackParameters(playbackParameters);
+        statusRepetition = DialogSpeed.statusSwitch;
         currentSpeed = player.getPlaybackParameters().speed;
     }
 

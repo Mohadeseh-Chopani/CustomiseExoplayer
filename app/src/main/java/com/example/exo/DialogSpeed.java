@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,9 +25,11 @@ import java.util.List;
 public class DialogSpeed extends DialogFragment {
     RadioButton radio_50, radio_75, radio_1, radio_125, radio_150;
     ListenerSpeed listenerSpeed;
-
+    Switch switchContinuePlaying;
     RadioGroup radioGroup;
     Button confirm;
+
+    static boolean statusSwitch;
 
     enum Status {
         SPEED50, SPEED75, SPEED1, SPEED125, SPEED150
@@ -55,6 +59,19 @@ public class DialogSpeed extends DialogFragment {
         radio_150 = view.findViewById(R.id.radio_150);
         radioGroup = view.findViewById(R.id.radioGroup);
         confirm = view.findViewById(R.id.confirm_speed);
+        switchContinuePlaying = view.findViewById(R.id.switch_continue);
+
+
+        switchContinuePlaying.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                statusSwitch = isChecked;
+            }
+        });
+
+
+        switchContinuePlaying.setChecked(MainActivity.statusRepetition);
+
 
         switch ((int) ((MainActivity.currentSpeed) * 100)) {
             case 1:
@@ -103,6 +120,11 @@ public class DialogSpeed extends DialogFragment {
                     listenerSpeed.itemClick(1.25f);
                 } else if (status == Status.SPEED150) {
                     listenerSpeed.itemClick(1.5f);
+                }
+
+
+                if (statusSwitch) {
+                    listenerSpeed.itemClick(1.0f);
                 }
 
                 dismiss();

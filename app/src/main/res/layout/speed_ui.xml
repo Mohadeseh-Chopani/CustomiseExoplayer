@@ -14,6 +14,14 @@
         android:layout_margin="20dp"
         android:orientation="vertical">
 
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Auto replay"
+            android:textSize="18sp"
+            android:layout_marginBottom="18dp"
+            android:id="@+id/switch_continue"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
