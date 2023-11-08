@@ -5,4 +5,5 @@
     <color name="checked">#FF9800</color>
     <color name="volume">#03AFC1</color>
     <color name="unSetItem">#B9AFB1B1</color>
+    <color name="semi_transparent_black">#99000000</color>
 </resources>

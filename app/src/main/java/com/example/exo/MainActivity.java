@@ -4,27 +4,20 @@ import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.SharedPreferencesKt;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
@@ -55,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     float currentVolume;
     VolumeChangeReceiver volumeChangeReceiver;
 
+    Fullscreen.StatusFullscreen statusFullscreen = Fullscreen.StatusFullscreen.Fill;
     MediaItem.SubtitleConfiguration subtitle1, subtitle2;
     AudioManager audioManager;
     ProgressBar progressBar;
@@ -63,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     ConstraintLayout layoutController;
     long position;
     Language languageClass;
-
     static boolean statusRepetition;
     static int currentQuality;
     DialogSubtitle.Status status = DialogSubtitle.Status.PERSIAN;
@@ -189,15 +182,51 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
         //Fullscreen button
         btnFullscreen.setOnClickListener(view -> {
-            playerView.setUseController(playerView.getUseController());
-            if (playerView.getResizeMode() == AspectRatioFrameLayout.RESIZE_MODE_FILL) {
-                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
-                btnFullscreen.setImageResource(R.drawable.outline_fullscreen_24);
-            } else {
-                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
-                btnFullscreen.setImageResource(R.drawable.baseline_fullscreen_exit_24);
+
+            PopupMenu popupMenu = new PopupMenu(this, view);
+            popupMenu.getMenuInflater().inflate(R.menu.menu_fullscreen, popupMenu.getMenu());
+
+            MenuItem fill, fit, fixed_width, fixed_height, zoom;
+
+            fill = popupMenu.getMenu().findItem(R.id.FillMode);
+            fit = popupMenu.getMenu().findItem(R.id.FitMode);
+            fixed_width = popupMenu.getMenu().findItem(R.id.FixedWidthMode);
+            fixed_height = popupMenu.getMenu().findItem(R.id.FixedHeightMode);
+            zoom = popupMenu.getMenu().findItem(R.id.ZoomMode);
+
+            try {
+                switch (statusFullscreen) {
+                    case Fill:
+                        fill.setChecked(true);
+                        break;
+                    case Fit:
+                        fit.setChecked(true);
+                        break;
+                    case FIXED_WIDTH:
+                        fixed_width.setChecked(true);
+                        break;
+                    case FIXED_HEIGHT:
+                        fixed_height.setChecked(true);
+                        break;
+                    case ZOOM:
+                        zoom.setChecked(true);
+                        break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    Fullscreen fullscreen = new Fullscreen(playerView);
+                    statusFullscreen = fullscreen.setFullscreen(menuItem);
+                    return false;
+                }
+            });
+            popupMenu.show();
         });
+
 
         btnLanguage.setOnClickListener(view -> {
             DialogLanguage dialogLanguage = new DialogLanguage();
@@ -310,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     void settings(View view) {
         Context wrapper = new ContextThemeWrapper(view.getContext(), R.style.MyPopupMenu);
         PopupMenu popupMenu = new PopupMenu(this, view);
-        popupMenu.getMenuInflater().inflate(R.menu.menu, popupMenu.getMenu());
+        popupMenu.getMenuInflater().inflate(R.menu.menu_setting, popupMenu.getMenu());
 
         popupMenu.show();
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -392,4 +421,5 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     public void clickItemToChooseLan(int status) {
         languageClass.setLanguage(status);
     }
+
 }
