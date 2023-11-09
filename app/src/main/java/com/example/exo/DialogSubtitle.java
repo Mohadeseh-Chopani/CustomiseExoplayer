@@ -8,8 +8,11 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -43,7 +46,7 @@ public class DialogSubtitle extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.MyCustomTheme);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.MyCustomTheme);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_subtitle, null, false);
         builder.setView(view);
 
@@ -76,7 +79,9 @@ public class DialogSubtitle extends DialogFragment {
                 dismiss();
             }
         });
-        return builder.create();
+        AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.background_dialog);
+        return alertDialog;
     }
 
     interface setSubtitle {

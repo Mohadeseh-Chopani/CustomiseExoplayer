@@ -1,13 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    app:cardBackgroundColor="#52403E3E"
-    app:cardCornerRadius="30dp"
-    android:elevation="10dp">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="20dp"
+    android:layout_height="wrap_content">
 
-    <include layout="@layout/quality_ui"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-</androidx.cardview.widget.CardView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Quality"
+            android:textSize="23sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/white"/>
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/radio_group_quality">
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/quality_atomatic"
+                android:text="Automatic"
+                android:buttonTint="@color/PrimaryColor"
+                android:textSize="18sp"
+                android:paddingLeft="10dp"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/quality_360"
+                android:text="360p"
+                android:buttonTint="@color/PrimaryColor"
+                android:textSize="18sp"
+                android:paddingLeft="10dp"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/PrimaryColor"
+                android:id="@+id/quality_480"
+                android:text="480p"
+                android:textSize="18sp"
+                android:paddingLeft="10dp"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/quality_720"
+                android:buttonTint="@color/PrimaryColor"
+                android:text="720p"
+                android:textSize="18sp"
+                android:paddingLeft="10dp"/>
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/quality_1080"
+                android:buttonTint="@color/PrimaryColor"
+                android:text="1080p"
+                android:textSize="18sp"
+                android:paddingLeft="10dp"/>
+        </RadioGroup>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

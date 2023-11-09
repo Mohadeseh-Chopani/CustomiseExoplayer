@@ -33,6 +33,8 @@
             <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
                 android:id="@+id/SeekBarVolume"
                 style="@style/Widget.AppCompat.SeekBar"
+                android:thumbTint="@color/PrimaryColor"
+                android:progressTint="@color/PrimaryColor"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:max="10"
@@ -48,7 +50,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
             android:src="@drawable/baseline_volume_down_24"
-            app:tint="#03AFC1" />
+            app:tint="@color/PrimaryColor" />
     </LinearLayout>
 
 
@@ -77,7 +79,8 @@
 
             <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
                 android:id="@+id/SeekBarBrightness"
-                style="@style/Widget.AppCompat.SeekBar"
+                android:thumbTint="@color/PrimaryColor"
+                android:progressTint="@color/PrimaryColor"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:max="10"
@@ -93,7 +96,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
             android:src="@drawable/baseline_brightness_medium_24"
-            app:tint="#03AFC1" />
+            app:tint="@color/PrimaryColor" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -299,5 +302,4 @@
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

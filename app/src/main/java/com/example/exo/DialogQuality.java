@@ -104,7 +104,9 @@ public class DialogQuality extends DialogFragment {
             }
         });
 
-        return builder.create();
+        AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.background_dialog);
+        return alertDialog;
     }
 
     interface ListenerQuality {

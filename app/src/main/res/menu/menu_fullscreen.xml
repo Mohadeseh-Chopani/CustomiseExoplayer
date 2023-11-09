@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu  xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
-    <item android:title="Fill"  android:id="@+id/FillMode" android:checkable="true" android:checked="false"/>
+    <item android:title="Fill"  android:id="@+id/FillMode"  android:checkable="true"  android:checked="false"/>
     <item android:title="Fit" android:id="@+id/FitMode" android:checkable="true" android:checked="false"/>
     <item android:title="Fixed height" android:id="@+id/FixedHeightMode" android:checkable="true" android:checked="false"/>
     <item android:title="Zoom" android:id="@+id/ZoomMode" android:checkable="true" android:checked="false"/>

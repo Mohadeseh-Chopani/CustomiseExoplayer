@@ -131,7 +131,9 @@ public class DialogSpeed extends DialogFragment {
             }
         });
 
-        return builder.create();
+        AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.background_dialog);
+        return alertDialog;
     }
 
     interface ListenerSpeed {

@@ -65,7 +65,9 @@ public class DialogLanguage extends DialogFragment {
             dismiss();
         });
 
-        return builder.create();
+        AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.background_dialog);
+        return alertDialog;
     }
 
     interface setLanguage {

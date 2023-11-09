@@ -183,7 +183,8 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         //Fullscreen button
         btnFullscreen.setOnClickListener(view -> {
 
-            PopupMenu popupMenu = new PopupMenu(this, view);
+            Context wrapper = new ContextThemeWrapper(this, R.style.MyPopupMenu);
+            PopupMenu popupMenu = new PopupMenu(wrapper, view);
             popupMenu.getMenuInflater().inflate(R.menu.menu_fullscreen, popupMenu.getMenu());
 
             MenuItem fill, fit, fixed_width, fixed_height, zoom;
