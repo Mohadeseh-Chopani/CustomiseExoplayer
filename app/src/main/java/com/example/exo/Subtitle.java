@@ -1,51 +1,42 @@
 package com.example.exo;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.media.AudioAttributes;
-import android.media.MediaMetadata;
 import android.net.Uri;
-import android.os.Bundle;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.MergingMediaSource;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-import com.google.android.exoplayer2.source.SingleSampleMediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionParameters;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.MimeTypes;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
 
-import java.util.Collections;
 import java.util.List;
 
 public class Subtitle {
-    ExoPlayer player;
     Uri subtitleUri;
     static int buffering;
     Context context;
-    static int currentSubtitle;
+    static int currentSubtitle = 1;
 
-    public Subtitle(ExoPlayer player, Context context, Uri subtitleUri) {
-        this.player = player;
+    public Subtitle (Context context, Uri subtitleUri) {
         this.context = context;
         this.subtitleUri = subtitleUri;
     }
 
-    public void setSubtitleConfigurations(Uri videoUri, List<MediaItem.SubtitleConfiguration> subtitles, DialogSubtitle.Status status) {
+    public TrackSelector setSubtitle(ExoPlayer player, DialogSubtitle.Status status) {
 
-        MediaItem mediaItem;
+        String subtitle;
+        if (status == DialogSubtitle.Status.OFF)
+            subtitle = " ";
+        else
+            subtitle = "fa";
 
-        mediaItem = new MediaItem.Builder()
-                .setUri(videoUri)
-                .setSubtitleConfigurations(subtitles)
+        TrackSelector trackSelector =new DefaultTrackSelector(context);
+        TrackSelectionParameters trackSelectionParameters = new TrackSelectionParameters.Builder()
+                .setPreferredTextLanguage(subtitle)
                 .build();
+
+        trackSelector.setParameters(trackSelectionParameters);
 
 
         if (status == DialogSubtitle.Status.OFF) {
@@ -56,7 +47,6 @@ public class Subtitle {
             currentSubtitle = 1;
         }
 
-        player.setMediaItem(mediaItem);
-        player.prepare();
+        return trackSelector;
     }
 }

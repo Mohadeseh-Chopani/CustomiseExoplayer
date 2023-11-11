@@ -22,13 +22,13 @@ public class Language {
 
     static int currentLanguage;
 
-    public Language(ExoPlayer player, Context context) {
+    public Language( ExoPlayer player, Context context) {
         this.context = context;
         this.player = player;
     }
 
     String[] languageList = {"en", "fa"};
-    String language;
+    static String language;
 
     public void setLanguage(int status) {
 

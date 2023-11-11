@@ -23,7 +23,9 @@ import android.widget.SeekBar;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.analytics.AnalyticsListener;
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.TrackSelectionParameters;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.util.MimeTypes;
 
@@ -59,13 +61,13 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     Language languageClass;
     static boolean statusRepetition;
     static int currentQuality;
-    DialogSubtitle.Status status = DialogSubtitle.Status.PERSIAN;
     Uri subtitleUri1 = Uri.parse("https://vod2.afarinak.com/api/video/subtitle/72/download/");
 
     Uri videoUri = Uri.parse("https://vod2.afarinak.com/api/video/a624b7ec-50b6-4997-a04a-b8e440a6bba4/stream/afarinak/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiYTYyNGI3ZWMtNTBiNi00OTk3LWEwNGEtYjhlNDQwYTZiYmE0In0.4y-WUvDNBBULYgvma0Vup3G0PaKnRvI6QF6ivVUWiZc/master.mpd");
 
     List<MediaItem.SubtitleConfiguration> subtitles = new ArrayList<>();
     Subtitle subtitleClass;
+    TrackSelector trackSelectorSub;
     Uri subtitleUri2 = Uri.parse("");
 
     @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
@@ -90,10 +92,24 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         img_brightness = findViewById(R.id.img_brightness);
 
 
-        DefaultTrackSelector trackSelector = new DefaultTrackSelector(this);
+        //Set subtitle over video
+        subtitleClass = new Subtitle(this, subtitleUri1);
+
+
+        TrackSelector defaultTrackSelector =new DefaultTrackSelector(this);
+        TrackSelectionParameters trackSelectionParameters = new TrackSelectionParameters.Builder()
+                .setPreferredAudioLanguage("fa")
+                .setPreferredTextLanguage("fa")
+                .build();
+
+        defaultTrackSelector.setParameters(trackSelectionParameters);
 
         //Make instance of Exoplayer
-        player = new ExoPlayer.Builder(this).setLoadControl(Buffering.getBuffer(Subtitle.buffering)).setTrackSelector(trackSelector).setTrackSelector(trackSelector).build();
+        player = Initialize(defaultTrackSelector);
+
+        //Make instance of language class
+        languageClass = new Language(player,this);
+
         playerView.setPlayer(player);
 
 
@@ -147,12 +163,14 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         subtitles.add(1, subtitle2);
 
 
-        //Make instance of language class
-        languageClass = new Language(player, this);
+        MediaItem mediaItem = new MediaItem.Builder()
+                .setUri(videoUri)
+                .setSubtitleConfigurations(subtitles)
+                .build();
 
-        //Set subtitle over video
-        subtitleClass = new Subtitle(player, this, subtitleUri1);
-        subtitleClass.setSubtitleConfigurations(videoUri, subtitles, status);
+
+        player.setMediaItem(mediaItem);
+        player.prepare();
         player.setPlayWhenReady(true);
 
 
@@ -411,10 +429,8 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     //Set subtitle through dialog
     @Override
     public void clickItemToChooseSub(DialogSubtitle.Status status) {
-        this.status = status;
-        position = player.getCurrentPosition();
-        subtitleClass.setSubtitleConfigurations(videoUri, subtitles, status);
-        player.seekTo(position);
+         trackSelectorSub = subtitleClass.setSubtitle(player, status);
+         Initialize(trackSelectorSub);
     }
 
     //Set language through dialog
@@ -423,4 +439,8 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         languageClass.setLanguage(status);
     }
 
+
+    public ExoPlayer Initialize(TrackSelector selector){
+       return new ExoPlayer.Builder(this).setLoadControl(Buffering.getBuffer(Subtitle.buffering)).setTrackSelector(selector).build();
+    }
 }
