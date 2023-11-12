@@ -42,15 +42,19 @@ public class Fullscreen {
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
             statusFullscreen = StatusFullscreen.Fill;
         } else if (menuItem.getItemId() == R.id.FitMode) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
             statusFullscreen = StatusFullscreen.Fit;
         } else if (menuItem.getItemId() == R.id.FixedWidthMode) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
             statusFullscreen = StatusFullscreen.FIXED_WIDTH;
         } else if (menuItem.getItemId() == R.id.FixedHeightMode) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT);
             statusFullscreen = StatusFullscreen.FIXED_HEIGHT;
         } else if (menuItem.getItemId() == R.id.ZoomMode) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
             statusFullscreen = StatusFullscreen.ZOOM;
         }

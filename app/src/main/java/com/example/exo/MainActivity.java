@@ -26,6 +26,7 @@ import com.google.android.exoplayer2.analytics.AnalyticsListener;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.TrackSelectionParameters;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.util.MimeTypes;
 
@@ -44,10 +45,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements DialogSpeed.ListenerSpeed, DialogQuality.ListenerQuality, DialogSubtitle.setSubtitle, DialogLanguage.setLanguage {
 
     ExoPlayer player;
-    ImageView btnPlay, img_volume, settings, btnSubtitle, btnFullscreen, btnLanguage, img_brightness;
+    ImageView btnPlay, img_volume, settings, btnSubtitle, btnFullscreen, btnLanguage, img_brightness, btnLock, btnLockBehind;
     StyledPlayerView playerView;
     SeekBar seekBarVolume, seekBarBrightness;
     float currentVolume;
+    ConstraintLayout layoutControl;
     VolumeChangeReceiver volumeChangeReceiver;
 
     Fullscreen.StatusFullscreen statusFullscreen = Fullscreen.StatusFullscreen.Fill;
@@ -90,12 +92,16 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         layoutController = findViewById(R.id.layout_controller);
         seekBarBrightness = findViewById(R.id.SeekBarBrightness);
         img_brightness = findViewById(R.id.img_brightness);
+        btnLock = findViewById(R.id.btn_lock);
+        btnLockBehind = playerView.findViewById(R.id.btn_lock_behind);
+        layoutControl = findViewById(R.id.layout_control);
 
 
         //Set subtitle over video
         subtitleClass = new Subtitle(this, subtitleUri1);
 
 
+        //Set default trackselection for exoplayer
         TrackSelector defaultTrackSelector =new DefaultTrackSelector(this);
         TrackSelectionParameters trackSelectionParameters = new TrackSelectionParameters.Builder()
                 .setPreferredAudioLanguage("fa")
@@ -331,6 +337,32 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
             }
         });
+
+        //Lock Player
+        btnLock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (layoutControl.isEnabled()) {
+                    playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+                    layoutControl.setVisibility(View.INVISIBLE);
+                    layoutVolume.setVisibility(View.INVISIBLE);
+                    btnLockBehind.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        btnLockBehind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int statusVisibility = layoutControl.getVisibility();
+                if (statusVisibility == View.INVISIBLE) {
+                    playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+                    layoutControl.setVisibility(View.VISIBLE);
+                    layoutVolume.setVisibility(View.VISIBLE);
+                    btnLockBehind.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
     }
 
     //Change image based on change volume
@@ -354,6 +386,18 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         player = null;
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        player.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        player.play();
+    }
+
     //Set popup menu for setting button
     void settings(View view) {
         Context wrapper = new ContextThemeWrapper(view.getContext(), R.style.MyPopupMenu);
@@ -372,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
                 } else if (item.getItemId() == R.id.quality) {
 
-                    DialogQuality dialogQuality = new DialogQuality();
+                    DialogQuality dialogQuality = new DialogQuality(player);
                     dialogQuality.show(getFragmentManager(), null);
                 }
                 return false;
