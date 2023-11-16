@@ -16,6 +16,7 @@
             android:textSize="18sp"
             android:thumbTint="@color/PrimaryColor"
             android:trackTint="@color/PrimaryColor"
+            android:layout_marginStart="12dp"
             android:layout_marginBottom="18dp"
             android:id="@+id/switch_continue"/>
 
@@ -23,14 +24,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Speed"
+            android:layout_marginStart="12dp"
+            android:textColor="@color/white"
             android:textSize="23dp"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@color/white"/>
 
         <HorizontalScrollView
             android:layout_width="match_parent"

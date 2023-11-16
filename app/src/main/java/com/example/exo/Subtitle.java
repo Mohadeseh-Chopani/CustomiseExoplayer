@@ -39,13 +39,13 @@ public class Subtitle {
         trackSelector.setParameters(trackSelectionParameters);
 
 
-        if (status == DialogSubtitle.Status.OFF) {
-            player.setTrackSelectionParameters(player.getTrackSelectionParameters().buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true).build());
-            currentSubtitle = 0;
-        } else if (status == DialogSubtitle.Status.PERSIAN) {
-            player.setTrackSelectionParameters(player.getTrackSelectionParameters().buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false).build());
-            currentSubtitle = 1;
-        }
+//        if (status == DialogSubtitle.Status.OFF) {
+//            player.setTrackSelectionParameters(player.getTrackSelectionParameters().buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true).build());
+//            currentSubtitle = 0;
+//        } else if (status == DialogSubtitle.Status.PERSIAN) {
+//            player.setTrackSelectionParameters(player.getTrackSelectionParameters().buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false).build());
+//            currentSubtitle = 1;
+//        }
 
         return trackSelector;
     }

@@ -7,8 +7,13 @@
 
     <style name="Theme.Exo" parent="Base.Theme.Exo" />
 
+    <style name="DialogTitleStyle" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <style name="MyCustomTheme" parent="Theme.AppCompat.DayNight.Dialog">
         <item name="android:windowAnimationStyle">@style/MyAnimation.Window</item>
+        <item name="android:windowTitleStyle">@style/DialogTitleStyle</item>
     </style>
 
     <style name="MyAnimation.Window" parent="@android:style/Animation.Activity">

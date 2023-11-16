@@ -13,23 +13,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Language"
+            android:textColor="@color/white"
+            android:layout_marginStart="12dp"
             android:textSize="23sp"/>
+
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@color/white"/>
+            android:layout_height="0dp"/>
 
         <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="20dp"
+            android:layoutDirection="rtl"
             android:id="@+id/radioGroup_lan">
 
             <RadioButton
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Persian"
                 android:textSize="18sp"
@@ -39,7 +40,7 @@
                 android:id="@+id/btn_persian_lan"/>
 
             <RadioButton
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="English"
                 android:textSize="18sp"
