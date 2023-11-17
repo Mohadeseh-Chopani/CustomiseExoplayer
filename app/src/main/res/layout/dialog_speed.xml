@@ -12,10 +12,12 @@
         <Switch
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Auto replay"
+            android:text="پخش خودکار"
             android:textSize="18sp"
-            android:thumbTint="@color/PrimaryColor"
-            android:trackTint="@color/PrimaryColor"
+            android:thumbTint="#FFFFFF"
+            android:trackTint="@color/unSetItem"
+            android:duplicateParentState="false"
+            android:layoutDirection="rtl"
             android:layout_marginStart="12dp"
             android:layout_marginBottom="18dp"
             android:id="@+id/switch_continue"/>
@@ -23,8 +25,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Speed"
-            android:layout_marginStart="12dp"
+            android:text="سرعت پخش"
+            android:layout_marginEnd="12dp"
             android:textColor="@color/white"
             android:textSize="23dp"/>
 
@@ -59,7 +61,7 @@
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="normal"
+                    android:text="معمولی"
                     android:buttonTint="@color/PrimaryColor"
                     android:layout_margin="8dp"
                     android:checked="true"
@@ -68,18 +70,18 @@
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1.25 x"
-                    android:buttonTint="@color/PrimaryColor"
-                    android:layout_margin="8dp"
-                    android:id="@+id/radio_125"/>
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:text="1.5 x"
                     android:buttonTint="@color/PrimaryColor"
                     android:layout_margin="8dp"
                     android:id="@+id/radio_150"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2 x"
+                    android:buttonTint="@color/PrimaryColor"
+                    android:layout_margin="8dp"
+                    android:id="@+id/radio_200"/>
             </RadioGroup>
         </HorizontalScrollView>
 
@@ -93,7 +95,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/checked"
-                android:text="Confirm" />
+                android:text="تایید" />
 
         </FrameLayout>
 

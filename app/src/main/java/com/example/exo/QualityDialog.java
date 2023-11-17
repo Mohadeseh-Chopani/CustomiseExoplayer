@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * Dialog to select tracks.
  */
-public final class DialogQuality extends DialogFragment {
+public final class QualityDialog extends DialogFragment {
     static DialogInterface dialogInterface;
     private final SparseArray<TrackSelectionViewFragment> tabFragments;
     private final ArrayList<Integer> tabTrackTypes;
@@ -70,7 +70,7 @@ public final class DialogQuality extends DialogFragment {
             return;
         WindowManager.LayoutParams params = window.getAttributes();
         params.width = 800;
-        params.height = 1200;
+        params.height = 1000;
         window.setAttributes(params);
     }
 
@@ -95,17 +95,17 @@ public final class DialogQuality extends DialogFragment {
      * @param onDismissListener A {@link DialogInterface.OnDismissListener} to call when the dialog is
      *                          dismissed.
      */
-    public static DialogQuality createForTrackSelector(
+    public static QualityDialog createForTrackSelector(
             DefaultTrackSelector trackSelector, DialogInterface.OnDismissListener onDismissListener) {
         MappedTrackInfo mappedTrackInfo =
                 Assertions.checkNotNull(trackSelector.getCurrentMappedTrackInfo());
 
 
-        DialogQuality dialogQuality = new DialogQuality();
+        QualityDialog qualityDialog = new QualityDialog();
         DefaultTrackSelector.Parameters parameters = trackSelector.getParameters();
 
 
-        dialogQuality.init(
+        qualityDialog.init(
                 /* titleId= */ R.string.select_quality,
                 mappedTrackInfo,
                 /* initialParameters = */ parameters,
@@ -118,9 +118,9 @@ public final class DialogQuality extends DialogFragment {
                                 .clearSelectionOverrides(/* rendererIndex= */ i)
                                 .setRendererDisabled(
                                         /* rendererIndex= */ i,
-                                        dialogQuality.getIsDisabled(/* rendererIndex= */ i));
+                                        qualityDialog.getIsDisabled(/* rendererIndex= */ i));
                         List<SelectionOverride> overrides =
-                                dialogQuality.getOverrides(/* rendererIndex= */ i);
+                                qualityDialog.getOverrides(/* rendererIndex= */ i);
                         if (!overrides.isEmpty()) {
                             builder.setSelectionOverride(
                                     /* rendererIndex= */ i,
@@ -132,10 +132,10 @@ public final class DialogQuality extends DialogFragment {
 
                 },
                 onDismissListener);
-        return dialogQuality;
+        return qualityDialog;
     }
 
-    public DialogQuality() {
+    public QualityDialog() {
         tabFragments = new SparseArray<>();
         tabTrackTypes = new ArrayList<>();
         // Retain instance across activity re-creation to prevent losing access to init data.
@@ -364,8 +364,6 @@ public final class DialogQuality extends DialogFragment {
             trackSelectionView.setTrackNameProvider(new TrackNameProvider() {
                 @Override
                 public String getTrackName(Format format) {
-                    MainActivity.QualitiesHeight.add(format.height);
-                    MainActivity.QualitiesWidth.add(format.width);
                     return format.height + "p";
                 }
             });
@@ -385,13 +383,13 @@ public final class DialogQuality extends DialogFragment {
             this.overrides = overrides;
 
             // Access the parent dialog and dismiss it
-            DialogQuality parentDialog = (DialogQuality) getParentFragment();
+            QualityDialog parentDialog = (QualityDialog) getParentFragment();
             if (parentDialog != null) {
                 parentDialog.dismissDialog();
             }
             //Change quality
-            onClickListener.onClick(DialogQuality.dialogInterface, DialogInterface.BUTTON_POSITIVE);
-            DialogQuality.ItemSelected = true;
+            onClickListener.onClick(QualityDialog.dialogInterface, DialogInterface.BUTTON_POSITIVE);
+            QualityDialog.ItemSelected = true;
         }
     }
 }

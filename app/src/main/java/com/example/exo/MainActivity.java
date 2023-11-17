@@ -21,8 +21,10 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
 import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.analytics.AnalyticsListener;
 import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionParameters;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
@@ -42,7 +44,7 @@ import com.google.android.exoplayer2.ui.StyledPlayerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements DialogSpeed.ListenerSpeed, DialogSubtitle.setSubtitle, DialogLanguage.setLanguage {
+public class MainActivity extends AppCompatActivity implements SpeedDialog.ListenerSpeed, DialogSubtitle.setSubtitle {
 
     static ExoPlayer player;
     boolean isShowingTrackSelectionDialog;
@@ -52,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     float currentVolume;
     ConstraintLayout layoutControl;
     VolumeChangeReceiver volumeChangeReceiver;
-
     Fullscreen.StatusFullscreen statusFullscreen = Fullscreen.StatusFullscreen.Fill;
     MediaItem.SubtitleConfiguration subtitle1, subtitle2;
     AudioManager audioManager;
@@ -60,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     DefaultTimeBar defaultTimeBar;
     LinearLayout layoutVolume;
     ConstraintLayout layoutController;
-    Language languageClass;
     static boolean statusRepetition;
     static int currentQuality;
     Uri subtitleUri1 = Uri.parse("https://vod2.afarinak.com/api/video/subtitle/72/download/");
@@ -71,10 +71,11 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
     Subtitle subtitleClass;
     TrackSelector trackSelectorSub;
 
-    DefaultTrackSelector defaultTrackSelector;
+    static DefaultTrackSelector defaultTrackSelector;
     Uri subtitleUri2 = Uri.parse("");
-    static List<Integer>QualitiesHeight = new ArrayList<>();
-    static List<Integer>QualitiesWidth = new ArrayList<>();
+    static List<String> languageListName = new ArrayList<>();
+    static List<String> languageListId = new ArrayList<>();
+    static String statusLanguage = "en";
 
     @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
     @Override
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
 
         //Set default trackselection for exoplayer
-        defaultTrackSelector =new DefaultTrackSelector(this);
+        defaultTrackSelector = new DefaultTrackSelector(this);
         TrackSelectionParameters trackSelectionParameters = new TrackSelectionParameters.Builder()
                 .setPreferredAudioLanguage("en")
                 .setPreferredTextLanguage(" ")
@@ -118,9 +119,6 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
         //Make instance of Exoplayer
         player = Initialize(defaultTrackSelector);
-
-        //Make instance of language class
-        languageClass = new Language(player,this);
 
         playerView.setPlayer(player);
 
@@ -180,7 +178,6 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
                 .setSubtitleConfigurations(subtitles)
                 .build();
 
-
         player.setMediaItem(mediaItem);
         player.prepare();
         player.setPlayWhenReady(true);
@@ -190,11 +187,11 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isShowingTrackSelectionDialog && DialogQuality.willHaveContent(defaultTrackSelector)) {
+                if (!isShowingTrackSelectionDialog && QualityDialog.willHaveContent(defaultTrackSelector)) {
                     isShowingTrackSelectionDialog = true;
-                    DialogQuality dialogQuality = DialogQuality.createForTrackSelector(defaultTrackSelector,
+                    QualityDialog qualityDialog = QualityDialog.createForTrackSelector(defaultTrackSelector,
                             /* onDismissListener= */ dismissedDialog -> isShowingTrackSelectionDialog = false);
-                    dialogQuality.show(getSupportFragmentManager(), /* tag= */ null);
+                    qualityDialog.show(getSupportFragmentManager(), /* tag= */ null);
                 }
             }
         });
@@ -203,8 +200,8 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         btn_speed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogSpeed dialogSpeed = new DialogSpeed();
-                dialogSpeed.show(getSupportFragmentManager(), null);
+                SpeedDialog speedDialog = new SpeedDialog();
+                speedDialog.show(getSupportFragmentManager(), null);
             }
         });
 
@@ -276,8 +273,8 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
 
 
         btnLanguage.setOnClickListener(view -> {
-            DialogLanguage dialogLanguage = new DialogLanguage();
-            dialogLanguage.show(getSupportFragmentManager(), null);
+            LanguageDialog dialog = new LanguageDialog();
+            dialog.show(getSupportFragmentManager(), null);
         });
 
 
@@ -309,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         player.addListener(new Player.Listener() {
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                if (playbackState == Player.STATE_ENDED && DialogSpeed.statusSwitch) {
+                if (playbackState == Player.STATE_ENDED && SpeedDialog.statusSwitch) {
                     player.seekTo(0);
                     player.setPlayWhenReady(true);
                 }
@@ -336,9 +333,16 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
                 if (state == Player.STATE_READY) {
                     progressBar.setVisibility(View.GONE);
                     player.setPlayWhenReady(true);
+                    languageListName.clear();
+                    //Read audio language from vide and add to list
+                    audioLanguage();
+
                 } else if (state == Player.STATE_BUFFERING) {
                     progressBar.setVisibility(View.VISIBLE);
                     playerView.setKeepScreenOn(true);
+                    languageListName.clear();
+                    audioLanguage();
+
                 } else {
                     progressBar.setVisibility(View.GONE);
                     player.setPlayWhenReady(true);
@@ -398,6 +402,14 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
                 }
             }
         });
+
+        player.addListener(new Player.Listener() {
+            @Override
+            public void onTracksChanged(TrackGroupArray trackArray, TrackSelectionArray trackSelections) {
+
+
+            }
+        });
     }
 
     //Change image based on change volume
@@ -442,7 +454,7 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         Float pitch = 1.0f;
         PlaybackParameters playbackParameters = new PlaybackParameters(speed, pitch);
         player.setPlaybackParameters(playbackParameters);
-        statusRepetition = DialogSpeed.statusSwitch;
+        statusRepetition = SpeedDialog.statusSwitch;
         currentSpeed = player.getPlaybackParameters().speed;
     }
 
@@ -453,14 +465,23 @@ public class MainActivity extends AppCompatActivity implements DialogSpeed.Liste
         Initialize(trackSelectorSub);
     }
 
-    //Set language through dialog
-    @Override
-    public void clickItemToChooseLan(int status) {
-        languageClass.setLanguage(status);
+    private ExoPlayer Initialize(TrackSelector selector) {
+        return new ExoPlayer.Builder(this).setLoadControl(Buffering.getBuffer(Subtitle.buffering)).setTrackSelector(selector).build();
     }
 
-
-    public ExoPlayer Initialize(TrackSelector selector){
-        return new ExoPlayer.Builder(this).setLoadControl(Buffering.getBuffer(Subtitle.buffering)).setTrackSelector(selector).build();
+    private void audioLanguage() {
+        MappingTrackSelector.MappedTrackInfo mappedTrackInfo = defaultTrackSelector.getCurrentMappedTrackInfo();
+        if (mappedTrackInfo != null) {
+            for (int i = 0; i < mappedTrackInfo.getRendererCount(); i++) {
+                if (player.getRendererType(i) == C.TRACK_TYPE_AUDIO) {
+                    TrackGroupArray trackGroupArray = mappedTrackInfo.getTrackGroups(i);
+                    for (int j = 0; j < trackGroupArray.length; j++) {
+                        Format format = trackGroupArray.get(j).getFormat(0);
+                        languageListName.add(format.id);
+                        languageListId.add(format.language);
+                    }
+                }
+            }
+        }
     }
 }
