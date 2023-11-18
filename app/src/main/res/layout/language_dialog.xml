@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=" زیرنویس فیلم"
+        android:text=" صدای فیلم"
         android:layout_marginEnd="12dp"
         android:layoutDirection="ltr"
         android:layout_marginBottom="12dp"
@@ -19,7 +19,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/rv_subtitle">
+        android:id="@+id/rv_language">
     </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>

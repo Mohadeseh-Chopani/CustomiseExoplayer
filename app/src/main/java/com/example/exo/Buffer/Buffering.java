@@ -1,4 +1,4 @@
-package com.example.exo;
+package com.example.exo.Buffer;
 
 import android.util.Log;
 
@@ -7,7 +7,7 @@ import com.google.android.exoplayer2.LoadControl;
 
 public class Buffering {
 
-    public static LoadControl getBuffer(int buffer) {
+    public static LoadControl getBuffer() {
         DefaultLoadControl loadControl;
         try {
             Log.i("Buffering_Test","try");

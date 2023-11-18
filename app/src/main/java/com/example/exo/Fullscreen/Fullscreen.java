@@ -1,4 +1,4 @@
-package com.example.exo;
+package com.example.exo.Fullscreen;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.exo.R;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
 
@@ -26,7 +27,7 @@ public class Fullscreen {
         this.playerView = playerView;
     }
 
-    enum StatusFullscreen {
+    public enum StatusFullscreen {
         Fill,
         ZOOM,
         Fit,
@@ -42,15 +43,19 @@ public class Fullscreen {
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
             statusFullscreen = StatusFullscreen.Fill;
         } else if (menuItem.getItemId() == R.id.FitMode) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
             statusFullscreen = StatusFullscreen.Fit;
         } else if (menuItem.getItemId() == R.id.FixedWidthMode) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
             statusFullscreen = StatusFullscreen.FIXED_WIDTH;
         } else if (menuItem.getItemId() == R.id.FixedHeightMode) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT);
             statusFullscreen = StatusFullscreen.FIXED_HEIGHT;
         } else if (menuItem.getItemId() == R.id.ZoomMode) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
             statusFullscreen = StatusFullscreen.ZOOM;
         }

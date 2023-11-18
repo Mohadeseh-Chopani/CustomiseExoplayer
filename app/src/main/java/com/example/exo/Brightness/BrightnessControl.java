@@ -1,4 +1,4 @@
-package com.example.exo;
+package com.example.exo.Brightness;
 
 import static android.media.MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING;
 
@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
+import com.example.exo.R;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayer;
 
