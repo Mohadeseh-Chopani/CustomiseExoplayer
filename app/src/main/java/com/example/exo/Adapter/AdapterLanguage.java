@@ -1,4 +1,4 @@
-package com.example.exo;
+package com.example.exo.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,6 +9,9 @@ import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.exo.MainActivity;
+import com.example.exo.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +70,7 @@ public class AdapterLanguage extends RecyclerView.Adapter<AdapterLanguage.ViewHo
         }
     }
 
-    interface setLanguage {
+    public interface setLanguage {
         void clickItemToChooseLan(String status);
     }
 }

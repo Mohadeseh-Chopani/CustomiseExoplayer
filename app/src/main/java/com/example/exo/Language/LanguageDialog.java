@@ -1,4 +1,4 @@
-package com.example.exo;
+package com.example.exo.Language;
 
 import static com.example.exo.MainActivity.player;
 
@@ -11,13 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.exo.Adapter.AdapterLanguage;
+import com.example.exo.MainActivity;
+import com.example.exo.R;
 
 public class LanguageDialog extends DialogFragment implements AdapterLanguage.setLanguage {
     AdapterLanguage adapterLanguage;

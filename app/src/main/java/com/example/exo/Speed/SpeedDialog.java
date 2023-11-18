@@ -1,4 +1,4 @@
-package com.example.exo;
+package com.example.exo.Speed;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -20,6 +20,9 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.exo.MainActivity;
+import com.example.exo.R;
+
 public class SpeedDialog extends DialogFragment {
     RadioButton radio_50, radio_75, radio_1, radio_150, radio_200;
     ListenerSpeed listenerSpeed;
@@ -27,7 +30,7 @@ public class SpeedDialog extends DialogFragment {
     RadioGroup radioGroup;
     Button confirm;
 
-    static boolean statusSwitch = false;
+    public static boolean statusSwitch = false;
 
     enum Status {
         SPEED50, SPEED75, SPEED1, SPEED150, SPEED200
@@ -153,7 +156,7 @@ public class SpeedDialog extends DialogFragment {
         return alertDialog;
     }
 
-    interface ListenerSpeed {
+    public interface ListenerSpeed {
         void itemClick(Float speed);
     }
 }

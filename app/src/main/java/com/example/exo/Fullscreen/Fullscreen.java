@@ -1,4 +1,4 @@
-package com.example.exo;
+package com.example.exo.Fullscreen;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.exo.R;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
 
@@ -26,7 +27,7 @@ public class Fullscreen {
         this.playerView = playerView;
     }
 
-    enum StatusFullscreen {
+    public enum StatusFullscreen {
         Fill,
         ZOOM,
         Fit,

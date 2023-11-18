@@ -1,4 +1,4 @@
-package com.example.exo;
+package com.example.exo.Quality;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.exo.R;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.source.TrackGroupArray;

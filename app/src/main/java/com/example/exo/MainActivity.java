@@ -20,6 +20,15 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
+import com.example.exo.Brightness.BrightnessControl;
+import com.example.exo.Buffer.Buffering;
+import com.example.exo.Fullscreen.Fullscreen;
+import com.example.exo.Language.LanguageDialog;
+import com.example.exo.Quality.QualityDialog;
+import com.example.exo.Speed.SpeedDialog;
+import com.example.exo.Subtitle.SubtitleDialog;
+import com.example.exo.Subtitle.SubtitleList;
+import com.example.exo.Volume.VolumeChangeReceiver;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.analytics.AnalyticsListener;
@@ -30,7 +39,6 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionParameters;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
-import com.google.android.exoplayer2.util.MimeTypes;
 
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
@@ -40,13 +48,14 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.BuildConfig;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
+import com.google.android.exoplayer2.util.MimeTypes;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SpeedDialog.ListenerSpeed, DialogSubtitle.setSubtitle {
+public class MainActivity extends AppCompatActivity implements SpeedDialog.ListenerSpeed {
 
-    static ExoPlayer player;
+    public static ExoPlayer player;
     boolean isShowingTrackSelectionDialog;
     ImageView btnPlay, img_volume, settings, btnSubtitle, btnFullscreen, btnLanguage, img_brightness, btnLock, btnLockBehind, btn_speed;
     StyledPlayerView playerView;
@@ -55,27 +64,25 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
     ConstraintLayout layoutControl;
     VolumeChangeReceiver volumeChangeReceiver;
     Fullscreen.StatusFullscreen statusFullscreen = Fullscreen.StatusFullscreen.Fill;
-    MediaItem.SubtitleConfiguration subtitle1, subtitle2;
+    MediaItem.SubtitleConfiguration subtitleConfig;
     AudioManager audioManager;
     ProgressBar progressBar;
     DefaultTimeBar defaultTimeBar;
     LinearLayout layoutVolume;
     ConstraintLayout layoutController;
-    static boolean statusRepetition;
+    public static boolean statusRepetition;
     static int currentQuality;
     Uri subtitleUri1 = Uri.parse("https://vod2.afarinak.com/api/video/subtitle/72/download/");
 
-    Uri videoUri = Uri.parse("https://vod2.afarinak.com/api/video/a624b7ec-50b6-4997-a04a-b8e440a6bba4/stream/afarinak/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiYTYyNGI3ZWMtNTBiNi00OTk3LWEwNGEtYjhlNDQwYTZiYmE0In0.4y-WUvDNBBULYgvma0Vup3G0PaKnRvI6QF6ivVUWiZc/master.mpd");
+    Uri videoUri = Uri.parse("\n" +
+            " https://vod2.afarinak.com/api/video/5f3aa557-e4ca-4d46-9844-b1059b59b3c6/stream/afarinak/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiNWYzYWE1NTctZTRjYS00ZDQ2LTk4NDQtYjEwNTliNTliM2M2In0.N-pMsQ1RvBpd0sr4J029BYCqKi7TixT9CrG8Mv-Ai0A/master.mpd");
 
-    List<MediaItem.SubtitleConfiguration> subtitles = new ArrayList<>();
-    Subtitle subtitleClass;
-    TrackSelector trackSelectorSub;
-
+    public static List<MediaItem.SubtitleConfiguration> subtitleList = new ArrayList<>();
     static DefaultTrackSelector defaultTrackSelector;
-    Uri subtitleUri2 = Uri.parse("");
-    static List<String> languageListName = new ArrayList<>();
-    static List<String> languageListId = new ArrayList<>();
-    static String statusLanguage = "en";
+    public static List<String> languageListName = new ArrayList<>();
+    public static List<String> languageListId = new ArrayList<>();
+    public static String statusLanguage = "en";
+    public static String statusSubtitle = "fa";
 
     @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
     @Override
@@ -103,15 +110,11 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         btn_speed = findViewById(R.id.btn_speed);
 
 
-        //Set subtitle over video
-        subtitleClass = new Subtitle(this, subtitleUri1);
-
-
         //Set default trackselection for exoplayer
         defaultTrackSelector = new DefaultTrackSelector(this);
         TrackSelectionParameters trackSelectionParameters = new TrackSelectionParameters.Builder()
                 .setPreferredAudioLanguage("en")
-                .setPreferredTextLanguage(" ")
+                .setPreferredTextLanguage("fa")
                 .setForceLowestBitrate(true)
                 .build();
 
@@ -156,32 +159,29 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
 
 
         //Set subtitles
-        subtitle1 = new MediaItem.SubtitleConfiguration.Builder(subtitleUri1)
-                .setMimeType(MimeTypes.APPLICATION_SUBRIP)
-                .setLanguage("fa")
-                .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
-                .build();
+        SubtitleList subtitles = new SubtitleList();
+        subtitles.addSubtitle(" ", "off", "خاموش");
+        subtitles.addSubtitle(String.valueOf(subtitleUri1),"fa" ,"فارسی");
 
-        subtitle2 = new MediaItem.SubtitleConfiguration.Builder(subtitleUri2)
-                .setMimeType(MimeTypes.APPLICATION_SUBRIP)
-                .setLanguage("fa")
-                .setSelectionFlags(C.SELECTION_FLAG_AUTOSELECT)
-                .build();
-
-
-        subtitles.add(0, subtitle1);
-        subtitles.add(1, subtitle2);
-
+        for (int i = 0; i < SubtitleList.subtitles.size() ; i++) {
+            subtitleConfig = new MediaItem.SubtitleConfiguration.Builder(Uri.parse(SubtitleList.subtitles.get(i).getUrl()))
+                    .setUri(Uri.parse(SubtitleList.subtitles.get(i).getUrl()))
+                    .setMimeType(MimeTypes.APPLICATION_SUBRIP)
+                    .setLanguage(SubtitleList.subtitles.get(i).getId())
+                    .setLabel(SubtitleList.subtitles.get(i).getLanguage())
+                    .setSelectionFlags(C.SELECTION_FLAG_AUTOSELECT)
+                    .build();
+            MainActivity.subtitleList.add(subtitleConfig);
+        }
 
         MediaItem mediaItem = new MediaItem.Builder()
                 .setUri(videoUri)
-                .setSubtitleConfigurations(subtitles)
+                .setSubtitleConfigurations(this.subtitleList)
                 .build();
 
         player.setMediaItem(mediaItem);
         player.prepare();
         player.setPlayWhenReady(true);
-
 
         //Set quality for video
         settings.setOnClickListener(new View.OnClickListener() {
@@ -197,17 +197,14 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         });
 
         //Set speed display for video
-        btn_speed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SpeedDialog speedDialog = new SpeedDialog();
-                speedDialog.show(getSupportFragmentManager(), null);
-            }
+        btn_speed.setOnClickListener(view -> {
+            SpeedDialog speedDialog = new SpeedDialog();
+            speedDialog.show(getSupportFragmentManager(), null);
         });
 
         btnSubtitle.setOnClickListener(view -> {
-            DialogSubtitle dialogSubtitle = new DialogSubtitle();
-            dialogSubtitle.show(getSupportFragmentManager(), null);
+            SubtitleDialog subtitleDialog = new SubtitleDialog();
+            subtitleDialog.show(getSupportFragmentManager(), null);
         });
 
 
@@ -341,6 +338,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
                     progressBar.setVisibility(View.VISIBLE);
                     playerView.setKeepScreenOn(true);
                     languageListName.clear();
+                    //Read audio language from vide and add to list
                     audioLanguage();
 
                 } else {
@@ -445,7 +443,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         player.play();
     }
 
-    public static float currentSpeed;
+    public static float currentSpeed = 1.0f;
 
     //Set volume over speed dialog
     @Override
@@ -458,15 +456,8 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         currentSpeed = player.getPlaybackParameters().speed;
     }
 
-    //Set subtitle through dialog
-    @Override
-    public void clickItemToChooseSub(DialogSubtitle.Status status) {
-        trackSelectorSub = subtitleClass.setSubtitle(player, status);
-        Initialize(trackSelectorSub);
-    }
-
     private ExoPlayer Initialize(TrackSelector selector) {
-        return new ExoPlayer.Builder(this).setLoadControl(Buffering.getBuffer(Subtitle.buffering)).setTrackSelector(selector).build();
+        return new ExoPlayer.Builder(this).setLoadControl(Buffering.getBuffer()).setTrackSelector(selector).build();
     }
 
     private void audioLanguage() {

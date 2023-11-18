@@ -1,56 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="20dp">
+    android:padding="20dp"
+    android:layout_height="wrap_content">
 
-    <LinearLayout
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=" زیرنویس فیلم"
+        android:layout_marginEnd="12dp"
+        android:layoutDirection="ltr"
+        android:layout_marginBottom="12dp"
+        android:textColor="@color/white"
+        android:textSize="23sp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:id="@+id/rv_subtitle">
+    </androidx.recyclerview.widget.RecyclerView>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Subtitle"
-            android:layout_marginStart="12dp"
-            android:textColor="@color/white"
-            android:textSize="23sp"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"/>
-
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layoutDirection="rtl"
-            android:layout_marginTop="20dp"
-            android:id="@+id/radioGroup_sub">
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Off Subtitle"
-                android:buttonTint="@color/PrimaryColor"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:paddingLeft="10dp"
-                android:id="@+id/btn_off_sub"/>
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Persian"
-                android:textSize="18sp"
-                android:buttonTint="@color/PrimaryColor"
-                android:layout_margin="5dp"
-                android:paddingLeft="10dp"
-                android:id="@+id/btn_persian_sub"/>
-        </RadioGroup>
-
-
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
