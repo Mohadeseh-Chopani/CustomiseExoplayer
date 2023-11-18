@@ -49,6 +49,7 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.BuildConfig;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
+import com.google.android.exoplayer2.util.EventLogger;
 import com.google.android.exoplayer2.util.MimeTypes;
 
 import java.util.ArrayList;
@@ -351,6 +352,8 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
                 }
             }
         });
+
+        player.addAnalyticsListener(new EventLogger(defaultTrackSelector));
 
 
         //Send broadcast to OS to set volume
