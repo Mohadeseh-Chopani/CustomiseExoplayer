@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -83,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
     public static List<String> languageListId = new ArrayList<>();
     public static String statusLanguage = "en";
     public static String statusSubtitle = "fa";
+    boolean statusLock = false;
+    int countLanguage = 0;
 
     @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
     @Override
@@ -90,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        playerView = findViewById(R.id.playview);
+        playerView = findViewById(R.id.playView);
         seekBarVolume = findViewById(R.id.SeekBarVolume);
         img_volume = findViewById(R.id.img_volume);
         btnSubtitle = findViewById(R.id.btnSubtitle);
@@ -330,6 +333,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
                 if (state == Player.STATE_READY) {
                     progressBar.setVisibility(View.GONE);
                     player.setPlayWhenReady(true);
+                    countLanguage = languageListName.size();
                     languageListName.clear();
                     //Read audio language from vide and add to list
                     audioLanguage();
@@ -380,10 +384,12 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
             @Override
             public void onClick(View view) {
                 if (layoutControl.isEnabled()) {
-                    playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
                     layoutControl.setVisibility(View.INVISIBLE);
                     layoutVolume.setVisibility(View.INVISIBLE);
                     btnLockBehind.setVisibility(View.VISIBLE);
+
+                    statusLock = true;
+                    timerLock();
                 }
             }
         });
@@ -393,11 +399,11 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
             public void onClick(View view) {
                 int statusVisibility = layoutControl.getVisibility();
                 if (statusVisibility == View.INVISIBLE) {
-                    playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
                     layoutControl.setVisibility(View.VISIBLE);
                     layoutVolume.setVisibility(View.VISIBLE);
                     btnLockBehind.setVisibility(View.INVISIBLE);
                 }
+                statusLock = false;
             }
         });
 
@@ -406,6 +412,16 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
             public void onTracksChanged(TrackGroupArray trackArray, TrackSelectionArray trackSelections) {
 
 
+            }
+        });
+
+        playerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (statusLock){
+                    btnLockBehind.setVisibility(View.VISIBLE);
+                    timerLock();
+                }
             }
         });
     }
@@ -474,5 +490,15 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
                 }
             }
         }
+    }
+
+    //Set timer to show lock button
+    private void timerLock(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                btnLockBehind.setVisibility(View.INVISIBLE);
+            }
+        }, 3000);
     }
 }
