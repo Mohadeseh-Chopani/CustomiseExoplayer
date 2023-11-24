@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=" صدای فیلم"
+        android:fontFamily="@font/mw_bold"
         android:layout_marginEnd="12dp"
         android:layoutDirection="ltr"
         android:layout_marginBottom="12dp"

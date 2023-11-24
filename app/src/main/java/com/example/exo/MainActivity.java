@@ -11,19 +11,18 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
 import com.example.exo.Brightness.BrightnessControl;
 import com.example.exo.Buffer.Buffering;
-import com.example.exo.Fullscreen.Fullscreen;
+import com.example.exo.Fullscreen.FullscreenDialog;
 import com.example.exo.Language.LanguageDialog;
 import com.example.exo.Quality.QualityDialog;
 import com.example.exo.Speed.SpeedDialog;
@@ -38,7 +37,6 @@ import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelectionParameters;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 
 import com.google.android.exoplayer2.ExoPlayer;
@@ -65,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
     float currentVolume;
     ConstraintLayout layoutControl;
     VolumeChangeReceiver volumeChangeReceiver;
-    Fullscreen.StatusFullscreen statusFullscreen = Fullscreen.StatusFullscreen.Fill;
+    public static FullscreenDialog.StatusFullscreen statusFullscreen = FullscreenDialog.StatusFullscreen.Fill;
     MediaItem.SubtitleConfiguration subtitleConfig;
     AudioManager audioManager;
     ProgressBar progressBar;
@@ -74,10 +72,11 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
     ConstraintLayout layoutController;
     public static boolean statusRepetition;
     static int currentQuality;
+    CountDownTimer countDownTimer;
     Uri subtitleUri1 = Uri.parse("https://vod2.afarinak.com/api/video/subtitle/72/download/");
 
     Uri videoUri = Uri.parse("\n" +
-            " https://vod2.afarinak.com/api/video/5f3aa557-e4ca-4d46-9844-b1059b59b3c6/stream/afarinak/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiNWYzYWE1NTctZTRjYS00ZDQ2LTk4NDQtYjEwNTliNTliM2M2In0.N-pMsQ1RvBpd0sr4J029BYCqKi7TixT9CrG8Mv-Ai0A/master.mpd");
+            " https://vod2.afarinak.com/api/video/a624b7ec-50b6-4997-a04a-b8e440a6bba4/stream/afarinak/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiYTYyNGI3ZWMtNTBiNi00OTk3LWEwNGEtYjhlNDQwYTZiYmE0In0.4y-WUvDNBBULYgvma0Vup3G0PaKnRvI6QF6ivVUWiZc/master.mpd");
 
     public static List<MediaItem.SubtitleConfiguration> subtitleList = new ArrayList<>();
     static DefaultTrackSelector defaultTrackSelector;
@@ -167,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         subtitles.addSubtitle(" ", "off", "خاموش");
         subtitles.addSubtitle(String.valueOf(subtitleUri1),"fa" ,"فارسی");
 
+        subtitleList.clear();
         for (int i = 0; i < SubtitleList.subtitles.size() ; i++) {
             subtitleConfig = new MediaItem.SubtitleConfiguration.Builder(Uri.parse(SubtitleList.subtitles.get(i).getUrl()))
                     .setUri(Uri.parse(SubtitleList.subtitles.get(i).getUrl()))
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
                     .setLabel(SubtitleList.subtitles.get(i).getLanguage())
                     .setSelectionFlags(C.SELECTION_FLAG_AUTOSELECT)
                     .build();
-            MainActivity.subtitleList.add(subtitleConfig);
+            subtitleList.add(subtitleConfig);
         }
 
         MediaItem mediaItem = new MediaItem.Builder()
@@ -228,48 +228,8 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
 
         //Fullscreen button
         btnFullscreen.setOnClickListener(view -> {
-            PopupMenu popupMenu = new PopupMenu(this, view);
-            popupMenu.getMenuInflater().inflate(R.menu.menu_fullscreen, popupMenu.getMenu());
-
-            MenuItem fill, fit, fixed_width, fixed_height, zoom;
-
-            fill = popupMenu.getMenu().findItem(R.id.FillMode);
-            fit = popupMenu.getMenu().findItem(R.id.FitMode);
-            fixed_width = popupMenu.getMenu().findItem(R.id.FixedWidthMode);
-            fixed_height = popupMenu.getMenu().findItem(R.id.FixedHeightMode);
-            zoom = popupMenu.getMenu().findItem(R.id.ZoomMode);
-
-            try {
-                switch (statusFullscreen) {
-                    case Fill:
-                        fill.setChecked(true);
-                        break;
-                    case Fit:
-                        fit.setChecked(true);
-                        break;
-                    case FIXED_WIDTH:
-                        fixed_width.setChecked(true);
-                        break;
-                    case FIXED_HEIGHT:
-                        fixed_height.setChecked(true);
-                        break;
-                    case ZOOM:
-                        zoom.setChecked(true);
-                        break;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    Fullscreen fullscreen = new Fullscreen(playerView);
-                    statusFullscreen = fullscreen.setFullscreen(menuItem);
-                    return false;
-                }
-            });
-            popupMenu.show();
+            FullscreenDialog fullscreenDialog = new FullscreenDialog(playerView);
+            fullscreenDialog.show(getSupportFragmentManager(),null);
         });
 
 
@@ -391,8 +351,19 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
                     layoutVolume.setVisibility(View.INVISIBLE);
                     btnLockBehind.setVisibility(View.VISIBLE);
 
+                    countDownTimer = new CountDownTimer(3000, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            // Not used in this example
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            btnLockBehind.setVisibility(View.INVISIBLE);
+                        }
+                    };
+                    countDownTimer.start();
                     statusLock = true;
-                    timerLock();
                 }
             }
         });
@@ -423,7 +394,8 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
             public void onClick(View view) {
                 if (statusLock){
                     btnLockBehind.setVisibility(View.VISIBLE);
-                    timerLock();
+                    countDownTimer.cancel();
+                    countDownTimer.start();
                 }
             }
         });
@@ -495,13 +467,8 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         }
     }
 
-    //Set timer to show lock button
-    private void timerLock(){
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                btnLockBehind.setVisibility(View.INVISIBLE);
-            }
-        }, 3000);
+    // Method to check if the menu item is checked
+    private boolean isChecked(MenuItem menuItem) {
+        return menuItem.isChecked();
     }
 }

@@ -11,6 +11,7 @@
         android:buttonTint="@color/PrimaryColor"
         android:layout_margin="5dp"
         android:layoutDirection="ltr"
+        android:fontFamily="@font/iran_sans_medium"
         android:singleLine="true"
         android:id="@+id/btn_item"
         tools:ignore="MissingConstraints" />
