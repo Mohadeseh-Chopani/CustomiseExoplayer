@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.Gravity;
@@ -12,10 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialog;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -207,6 +210,8 @@ public final class QualityDialog extends DialogFragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.quality_dialog, null, false);
         dialog.setContentView(view);
         dialog.setTitle(R.string.select_quality);
+
+
         dialog.getWindow().setBackgroundDrawableResource(R.drawable.background_dialog);
         return dialog;
     }
@@ -229,6 +234,9 @@ public final class QualityDialog extends DialogFragment {
 
         dialogInterface = getDialog();
 
+
+
+        //------------------------------------------------------------------
 //        dialogView.setOnLongClickListener(new View.OnLongClickListener() {
 //            @Override
 //            public boolean onLongClick(View view) {
@@ -237,6 +245,8 @@ public final class QualityDialog extends DialogFragment {
 //                return false;
 //            }
 //        });
+
+        //-------------------------------------------------------------------
 
         viewPager.setAdapter(new FragmentAdapter(getChildFragmentManager()));
         tabLayout.setupWithViewPager(viewPager);
@@ -354,10 +364,9 @@ public final class QualityDialog extends DialogFragment {
                 @Nullable Bundle savedInstanceState) {
             @SuppressLint("PrivateResource")
             View rootView =
-                    inflater.inflate(
-                            com.google.android.exoplayer2.ui.R.layout.exo_track_selection_dialog, null, /* attachToRoot= */ false);
+                    inflater.inflate(R.layout.exo_track_selection_dialog_custom, null, /* attachToRoot= */ false);
             @SuppressLint({"MissingInflatedId", "LocalSuppress"})
-            TrackSelectionView trackSelectionView = rootView.findViewById(R.id.exo_track_selection_view);
+            com.example.exo.Quality.TrackSelectionView trackSelectionView = rootView.findViewById(R.id.exo_track_selection_view);
             trackSelectionView.setShowDisableOption(false);
             trackSelectionView.setAllowMultipleOverrides(false);
             trackSelectionView.setAllowAdaptiveSelections(false);

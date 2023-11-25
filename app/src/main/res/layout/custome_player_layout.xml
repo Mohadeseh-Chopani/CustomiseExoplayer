@@ -218,7 +218,7 @@
                 android:id="@+id/exo_ffwd"
                 android:layout_width="40dp"
                 android:layout_height="32dp"
-                android:src="@drawable/baseline_forward_5_24" />
+                android:src="@drawable/baseline_forward_10_24" />
 
             <ImageView
                 android:id="@+id/exo_play_pause"
@@ -241,7 +241,7 @@
                 android:id="@+id/exo_rew"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@drawable/outline_replay_10_24" />
+                android:src="@drawable/baseline_replay_5_24" />
 
         </LinearLayout>
 

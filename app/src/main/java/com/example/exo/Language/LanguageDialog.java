@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,6 +48,7 @@ public class LanguageDialog extends DialogFragment implements AdapterLanguage.se
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.MyCustomTheme);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.language_dialog, null, false);
         builder.setView(view);
+
 
         rv_language = view.findViewById(R.id.rv_language);
 

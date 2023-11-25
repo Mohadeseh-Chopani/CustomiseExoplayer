@@ -50,6 +50,7 @@ public class SubtitleDialog extends DialogFragment implements AdapterSubtitle.se
         rv_subtitle.setAdapter(adapterSubtitle);
 
 
+
         AlertDialog alertDialog = builder.create();
         alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.background_dialog);
         return alertDialog;

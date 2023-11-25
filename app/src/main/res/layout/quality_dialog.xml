@@ -10,6 +10,7 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/track_selection_dialog_view_pager"
         android:layout_width="match_parent"
+        android:layout_gravity="end"
         android:layout_height="wrap_content">
 
         <com.google.android.material.tabs.TabLayout
