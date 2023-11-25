@@ -2,6 +2,7 @@ package com.example.exo;
 
 import static android.content.ContentValues.TAG;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -12,6 +13,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -434,6 +436,11 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         player.play();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        player.release();
+    }
     public static float currentSpeed = 1.0f;
 
     //Set volume over speed dialog
@@ -467,8 +474,30 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         }
     }
 
-    // Method to check if the menu item is checked
-    private boolean isChecked(MenuItem menuItem) {
-        return menuItem.isChecked();
+
+    //Set saveInstanceState for player when rotate screen
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (player != null) {
+            outState.putLong("playback_position", player.getCurrentPosition());
+            outState.putInt("current_window", player.getCurrentWindowIndex());
+            outState.putBoolean("play_when_ready", player.getPlayWhenReady());
+        }
     }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        long playbackPosition = savedInstanceState.getLong("playback_position");
+        int currentWindow = savedInstanceState.getInt("current_window");
+        boolean playWhenReady = savedInstanceState.getBoolean("play_when_ready");
+
+        // Restore the player state
+        if (player != null) {
+            player.seekTo(currentWindow, playbackPosition);
+            player.setPlayWhenReady(playWhenReady);
+        }
+    }
+
 }
