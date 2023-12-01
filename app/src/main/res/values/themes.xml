@@ -13,6 +13,9 @@
     </style>
 
     <style name="MyCustomTheme" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="android:direction">right_to_left</item>
+        <item name="android:textDirection">rtl</item>
+        <item name="android:layoutDirection">rtl</item>
         <item name="android:windowAnimationStyle">@style/MyAnimation.Window</item>
         <item name="android:windowTitleStyle">@style/DialogTitleStyle</item>
     </style>
