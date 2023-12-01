@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exo.MainActivity;
+import com.example.exo.Model.DataPlayer;
 import com.example.exo.R;
 import com.google.android.exoplayer2.MediaItem;
 
@@ -20,8 +21,10 @@ public class AdapterSubtitle extends RecyclerView.Adapter<AdapterSubtitle.ViewHo
 
     List<MediaItem.SubtitleConfiguration> list = new ArrayList<>();
     setSubtitle setSubtitle;
+    private List<RadioButton> radioButtonList = new ArrayList<>();
+    DataPlayer data_player = new DataPlayer();
+    int previousPosition = data_player.statusSubtitle;
     Context context;
-
     public AdapterSubtitle(List<MediaItem.SubtitleConfiguration> list, Context context, setSubtitle setSubtitle) {
         this.list = list;
         this.context = context;
@@ -36,7 +39,7 @@ public class AdapterSubtitle extends RecyclerView.Adapter<AdapterSubtitle.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(list.get(position).language, list.get(position).label);
+        holder.bind(list.get(position));
     }
 
     @Override
@@ -52,20 +55,33 @@ public class AdapterSubtitle extends RecyclerView.Adapter<AdapterSubtitle.ViewHo
             radioButton = itemView.findViewById(R.id.btn_item);
         }
 
-        void bind(String subtitleId, String subtitleName) {
-            radioButton.setText(subtitleName);
-            for (int i = 0; i < list.size(); i++) {
-                String index = subtitleId;
+        void bind(MediaItem.SubtitleConfiguration dataPlayer) {
+
+            radioButton.setText(dataPlayer.label);
+            radioButtonList.add(radioButton);
+            String index = dataPlayer.language;
                 if (index.equals(MainActivity.statusSubtitle)) {
                     radioButton.setChecked(true);
                 }
+
+            for (int i = 0; i < radioButtonList.size(); i++) {
+                if (radioButtonList.get(i).isChecked())
+                    previousPosition = i;
             }
 
             radioButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    int currentPosition = getAdapterPosition();
+
+                    if (previousPosition != -1 && previousPosition < radioButtonList.size()) {
+                        radioButtonList.get(previousPosition).setChecked(false);
+                    }
                     radioButton.setChecked(true);
-                    setSubtitle.clickItemToChooseSub(subtitleId);
+                    previousPosition = currentPosition;
+                    data_player.statusSubtitle = previousPosition;
+                    setSubtitle.clickItemToChooseSub(dataPlayer.language);
                 }
             });
         }

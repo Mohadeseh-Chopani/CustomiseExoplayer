@@ -17,11 +17,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exo.Adapter.AdapterSubtitle;
 import com.example.exo.MainActivity;
+import com.example.exo.Model.DataPlayer;
 import com.example.exo.R;
+import com.google.android.exoplayer2.MediaItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SubtitleDialog extends DialogFragment implements AdapterSubtitle.setSubtitle {
     AdapterSubtitle adapterSubtitle;
     RecyclerView rv_subtitle;
+    List<MediaItem.SubtitleConfiguration>list = new ArrayList<>();
+    public SubtitleDialog(List<MediaItem.SubtitleConfiguration> list) {
+        this.list = list;
+    }
 
     @Override
     public void onResume() {
@@ -36,7 +45,6 @@ public class SubtitleDialog extends DialogFragment implements AdapterSubtitle.se
         params.width = 800;
         window.setAttributes(params);
     }
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.MyCustomTheme);
@@ -46,7 +54,7 @@ public class SubtitleDialog extends DialogFragment implements AdapterSubtitle.se
         rv_subtitle = view.findViewById(R.id.rv_subtitle);
 
         rv_subtitle.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        adapterSubtitle = new AdapterSubtitle(MainActivity.subtitleList, getContext(), this);
+        adapterSubtitle = new AdapterSubtitle(list, getContext(), this);
         rv_subtitle.setAdapter(adapterSubtitle);
 
 
@@ -65,6 +73,6 @@ public class SubtitleDialog extends DialogFragment implements AdapterSubtitle.se
                         .setMaxVideoSizeSd()
                         .setPreferredTextLanguage(status)
                         .build());
-        dismiss();
+//        dismiss();
     }
 }

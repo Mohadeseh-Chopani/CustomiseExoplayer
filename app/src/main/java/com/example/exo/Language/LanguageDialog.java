@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,11 +20,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exo.Adapter.AdapterLanguage;
 import com.example.exo.MainActivity;
+import com.example.exo.Model.DataPlayer;
 import com.example.exo.R;
+import com.google.android.exoplayer2.Format;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LanguageDialog extends DialogFragment implements AdapterLanguage.setLanguage {
     AdapterLanguage adapterLanguage;
     RecyclerView rv_language;
+    List<Format> list = new ArrayList<>();
+
+    public LanguageDialog(List<Format> list) {
+        this.list = list;
+    }
 
     @Override
     public void onResume() {
@@ -53,7 +62,7 @@ public class LanguageDialog extends DialogFragment implements AdapterLanguage.se
         rv_language = view.findViewById(R.id.rv_language);
 
         rv_language.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        adapterLanguage = new AdapterLanguage(MainActivity.languageListName, MainActivity.languageListId, getContext(), this);
+        adapterLanguage = new AdapterLanguage(MainActivity.formatList, getContext(), this);
         rv_language.setAdapter(adapterLanguage);
 
 
@@ -72,6 +81,6 @@ public class LanguageDialog extends DialogFragment implements AdapterLanguage.se
                         .setMaxVideoSizeSd()
                         .setPreferredAudioLanguage(status)
                         .build());
-        dismiss();
+//        dismiss();
     }
 }

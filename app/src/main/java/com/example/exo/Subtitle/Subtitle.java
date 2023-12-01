@@ -1,5 +1,7 @@
 package com.example.exo.Subtitle;
 
+import com.example.exo.Model.DataPlayer;
+
 public class Subtitle {
     private String url;
     private String language;

@@ -1,5 +1,6 @@
 package com.example.exo.Adapter;
 
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,23 +12,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.exo.MainActivity;
+import com.example.exo.Model.DataPlayer;
 import com.example.exo.R;
+import com.google.android.exoplayer2.Format;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class AdapterLanguage extends RecyclerView.Adapter<AdapterLanguage.ViewHolder> {
 
-    public List<String> listName = new ArrayList<>();
-    public List<String> listId = new ArrayList<>();
+    public List<Format> list = new ArrayList<>();
+    private List<RadioButton> radioButtonList = new ArrayList<>();
     setLanguage setLanguage;
+    DataPlayer dataPlayer = new DataPlayer();
+    int previousPosition = dataPlayer.statusLanguage;
     Context context;
 
-    public AdapterLanguage(List<String> listName, List<String> listId, Context context, setLanguage setLanguage) {
-        this.listName = listName;
-        this.listId = listId;
+    public AdapterLanguage(List<Format> list, Context context, setLanguage setLanguage) {
+        this.list=list;
         this.context = context;
         this.setLanguage = setLanguage;
     }
@@ -40,12 +42,12 @@ public class AdapterLanguage extends RecyclerView.Adapter<AdapterLanguage.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.bind(listName.get(position), listId.get(position));
+        holder.bind(list.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return (listName.size());
+        return (list.size());
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -56,17 +58,33 @@ public class AdapterLanguage extends RecyclerView.Adapter<AdapterLanguage.ViewHo
             radioButton = itemView.findViewById(R.id.btn_item);
         }
 
-        void bind(String nameLanguage, String idLanguage) {
-            radioButton.setText(nameLanguage);
-            if (radioButton.getText().toString().equals(listName.get(listId.indexOf(MainActivity.statusLanguage)))) {
+        void bind(Format format) {
+            radioButton.setText(format.id);
+            radioButtonList.add(radioButton);
+            String index = format.language;
+            if (index.equals(MainActivity.statusLanguage)) {
                 radioButton.setChecked(true);
+            }
+
+            for (int i = 0; i < radioButtonList.size(); i++) {
+                if (radioButtonList.get(i).isChecked()){
+                    previousPosition = i;
+                }
             }
 
             radioButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    int currentPosition = getAdapterPosition();
+
+                    if (previousPosition != -1 && previousPosition < radioButtonList.size()) {
+                        radioButtonList.get(previousPosition).setChecked(false);
+                    }
                     radioButton.setChecked(true);
-                    setLanguage.clickItemToChooseLan(idLanguage);
+                    previousPosition = currentPosition;
+                    dataPlayer.statusLanguage = previousPosition;
+                    setLanguage.clickItemToChooseLan(format.language);
                 }
             });
         }

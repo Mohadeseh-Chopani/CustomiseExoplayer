@@ -215,10 +215,10 @@
 
 
             <ImageView
-                android:id="@+id/exo_ffwd"
-                android:layout_width="40dp"
+                android:id="@+id/exo_rew"
+                android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@drawable/baseline_forward_10_24" />
+                android:src="@drawable/baseline_replay_5_24" />
 
             <ImageView
                 android:id="@+id/exo_play_pause"
@@ -229,19 +229,10 @@
                 android:src="@drawable/baseline_play_arrow_24" />
 
             <ImageView
-                android:id="@+id/exo_pause"
+                android:id="@+id/exo_ffwd"
                 android:layout_width="40dp"
                 android:layout_height="32dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:src="@drawable/baseline_pause_24"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/exo_rew"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/baseline_replay_5_24" />
+                android:src="@drawable/baseline_forward_10_24" />
 
         </LinearLayout>
 

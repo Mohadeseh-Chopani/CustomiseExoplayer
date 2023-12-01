@@ -2,7 +2,6 @@ package com.example.exo;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -13,9 +12,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.PersistableBundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,7 +23,8 @@ import com.example.exo.Brightness.BrightnessControl;
 import com.example.exo.Buffer.Buffering;
 import com.example.exo.Fullscreen.FullscreenDialog;
 import com.example.exo.Language.LanguageDialog;
-import com.example.exo.Quality.QualityDialog;
+import com.example.exo.Model.DataPlayer;
+import com.example.exo.Quality.TrackSelectionDialog;
 import com.example.exo.Speed.SpeedDialog;
 import com.example.exo.Subtitle.SubtitleDialog;
 import com.example.exo.Subtitle.SubtitleList;
@@ -74,11 +72,8 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
     ConstraintLayout layoutController;
     public static boolean statusRepetition;
     static int currentQuality;
-    CountDownTimer countDownTimer;
+    CountDownTimer countDownTimerLock, countDownTimerShowController;
     Uri subtitleUri1 = Uri.parse("https://vod2.afarinak.com/api/video/subtitle/72/download/");
-
-    Uri videoUri = Uri.parse("\n" +
-            " https://vod2.afarinak.com/api/video/a624b7ec-50b6-4997-a04a-b8e440a6bba4/stream/afarinak/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiYTYyNGI3ZWMtNTBiNi00OTk3LWEwNGEtYjhlNDQwYTZiYmE0In0.4y-WUvDNBBULYgvma0Vup3G0PaKnRvI6QF6ivVUWiZc/master.mpd");
 
     public static List<MediaItem.SubtitleConfiguration> subtitleList = new ArrayList<>();
     static DefaultTrackSelector defaultTrackSelector;
@@ -88,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
     public static String statusSubtitle = "fa";
     boolean statusLock = false;
     int countLanguage = 0;
-
+    public static List<Format> formatList = new ArrayList<>();
     @SuppressLint({"MissingInflatedId", "ResourceAsColor"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         seekBarVolume = findViewById(R.id.SeekBarVolume);
         img_volume = findViewById(R.id.img_volume);
         btnSubtitle = findViewById(R.id.btnSubtitle);
-        defaultTimeBar = findViewById(R.id.exo_progress);
+        defaultTimeBar = playerView.findViewById(R.id.exo_progress);
         btnFullscreen = findViewById(R.id.btn_fullscreen);
         btnLanguage = findViewById(R.id.exo_language);
         btnPlay = playerView.findViewById(R.id.exo_play_pause);
@@ -114,6 +109,8 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         layoutControl = findViewById(R.id.layout_control);
         btn_speed = findViewById(R.id.btn_speed);
 
+        DataPlayer dataPlayer = new DataPlayer();
+        dataPlayer.setVideoUrl("https://vod2.afarinak.com/api/video/a624b7ec-50b6-4997-a04a-b8e440a6bba4/stream/afarinak/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1dWlkIjoiYTYyNGI3ZWMtNTBiNi00OTk3LWEwNGEtYjhlNDQwYTZiYmE0In0.4y-WUvDNBBULYgvma0Vup3G0PaKnRvI6QF6ivVUWiZc/master.mpd");
 
         //Set default trackselection for exoplayer
         defaultTrackSelector = new DefaultTrackSelector(this);
@@ -130,6 +127,8 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
 
         playerView.setPlayer(player);
 
+        defaultTimeBar.showScrubber(5000);
+        showController();
 
         //Change brightness in player
         BrightnessControl brightnessControl = new BrightnessControl(img_brightness, player, this);
@@ -168,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         subtitles.addSubtitle(" ", "off", "خاموش");
         subtitles.addSubtitle(String.valueOf(subtitleUri1),"fa" ,"فارسی");
 
-        subtitleList.clear();
+        formatList.clear();
         for (int i = 0; i < SubtitleList.subtitles.size() ; i++) {
             subtitleConfig = new MediaItem.SubtitleConfiguration.Builder(Uri.parse(SubtitleList.subtitles.get(i).getUrl()))
                     .setUri(Uri.parse(SubtitleList.subtitles.get(i).getUrl()))
@@ -177,12 +176,12 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
                     .setLabel(SubtitleList.subtitles.get(i).getLanguage())
                     .setSelectionFlags(C.SELECTION_FLAG_AUTOSELECT)
                     .build();
-            subtitleList.add(subtitleConfig);
+            dataPlayer.setSubtitleList(subtitleConfig);
         }
 
         MediaItem mediaItem = new MediaItem.Builder()
-                .setUri(videoUri)
-                .setSubtitleConfigurations(this.subtitleList)
+                .setUri(dataPlayer.getVideoUrl())
+                .setSubtitleConfigurations(dataPlayer.getSubtitleList())
                 .build();
 
         player.setMediaItem(mediaItem);
@@ -193,9 +192,9 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isShowingTrackSelectionDialog && QualityDialog.willHaveContent(defaultTrackSelector)) {
+                if (!isShowingTrackSelectionDialog && TrackSelectionDialog.willHaveContent(defaultTrackSelector)) {
                     isShowingTrackSelectionDialog = true;
-                    QualityDialog qualityDialog = QualityDialog.createForTrackSelector(defaultTrackSelector,
+                    TrackSelectionDialog qualityDialog = TrackSelectionDialog.createForTrackSelector(defaultTrackSelector,
                             /* onDismissListener= */ dismissedDialog -> isShowingTrackSelectionDialog = false);
                     qualityDialog.show(getSupportFragmentManager(), /* tag= */ null);
                 }
@@ -209,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         });
 
         btnSubtitle.setOnClickListener(view -> {
-            SubtitleDialog subtitleDialog = new SubtitleDialog();
+            SubtitleDialog subtitleDialog = new SubtitleDialog(dataPlayer.getSubtitleList());
             subtitleDialog.show(getSupportFragmentManager(), null);
         });
 
@@ -236,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
 
 
         btnLanguage.setOnClickListener(view -> {
-            LanguageDialog dialog = new LanguageDialog();
+            LanguageDialog dialog = new LanguageDialog(dataPlayer.getLanguageList());
             dialog.show(getSupportFragmentManager(), null);
         });
 
@@ -277,6 +276,9 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         });
 
 
+        defaultTimeBar.showScrubber(5000);
+        defaultTimeBar.setDuration(5000);
+
         player.addListener(new Player.Listener() {
             @Override
             public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
@@ -296,15 +298,15 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
                 if (state == Player.STATE_READY) {
                     progressBar.setVisibility(View.GONE);
                     player.setPlayWhenReady(true);
-                    countLanguage = languageListName.size();
-                    languageListName.clear();
+                    countLanguage = formatList.size();
+                    formatList.clear();
                     //Read audio language from vide and add to list
                     audioLanguage();
 
                 } else if (state == Player.STATE_BUFFERING) {
                     progressBar.setVisibility(View.VISIBLE);
                     playerView.setKeepScreenOn(true);
-                    languageListName.clear();
+                    formatList.clear();
                     //Read audio language from vide and add to list
                     audioLanguage();
 
@@ -353,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
                     layoutVolume.setVisibility(View.INVISIBLE);
                     btnLockBehind.setVisibility(View.VISIBLE);
 
-                    countDownTimer = new CountDownTimer(3000, 1000) {
+                    countDownTimerLock = new CountDownTimer(3000, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
                             // Not used in this example
@@ -364,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
                             btnLockBehind.setVisibility(View.INVISIBLE);
                         }
                     };
-                    countDownTimer.start();
+                    countDownTimerLock.start();
                     statusLock = true;
                 }
             }
@@ -378,6 +380,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
                     layoutControl.setVisibility(View.VISIBLE);
                     layoutVolume.setVisibility(View.VISIBLE);
                     btnLockBehind.setVisibility(View.INVISIBLE);
+                    playerView.showController();
                 }
                 statusLock = false;
             }
@@ -396,9 +399,12 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
             public void onClick(View view) {
                 if (statusLock){
                     btnLockBehind.setVisibility(View.VISIBLE);
-                    countDownTimer.cancel();
-                    countDownTimer.start();
+                    countDownTimerLock.cancel();
+                    countDownTimerLock.start();
                 }
+                showController();
+                countDownTimerShowController.cancel();
+                countDownTimerShowController.start();
             }
         });
     }
@@ -458,6 +464,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         return new ExoPlayer.Builder(this).setLoadControl(Buffering.getBuffer()).setTrackSelector(selector).build();
     }
 
+    DataPlayer dataPlayer = new DataPlayer();
     private void audioLanguage() {
         MappingTrackSelector.MappedTrackInfo mappedTrackInfo = defaultTrackSelector.getCurrentMappedTrackInfo();
         if (mappedTrackInfo != null) {
@@ -466,8 +473,10 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
                     TrackGroupArray trackGroupArray = mappedTrackInfo.getTrackGroups(i);
                     for (int j = 0; j < trackGroupArray.length; j++) {
                         Format format = trackGroupArray.get(j).getFormat(0);
-                        languageListName.add(format.id);
-                        languageListId.add(format.language);
+//                        languageListName.add(format.id);
+//                        languageListId.add(format.language);
+//                        dataPlayer.setLanguageList(format);
+                        formatList.add(format);
                     }
                 }
             }
@@ -475,7 +484,7 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
     }
 
 
-    //Set saveInstanceState for player when rotate screen
+    // Set saveInstanceState for player when rotate screen
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -500,4 +509,18 @@ public class MainActivity extends AppCompatActivity implements SpeedDialog.Liste
         }
     }
 
+    void showController(){
+        countDownTimerShowController = new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                // Not used in this example
+            }
+
+            @Override
+            public void onFinish() {
+                playerView.hideController();
+            }
+        };
+        countDownTimerShowController.start();
+    }
 }
